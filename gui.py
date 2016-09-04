@@ -147,6 +147,7 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_CHANNEL = 7025
     C_MAIN_PROGRESS = 7026
     C_MAIN_TIMEBAR = 4100
+    C_MAIN_TIMEBAR_HEAD = 4101
     C_MAIN_LOADING = 4200
     C_MAIN_LOADING_PROGRESS = 4201
     C_MAIN_LOADING_TIME_LEFT = 4202
@@ -172,6 +173,7 @@ class TVGuide(xbmcgui.WindowXML):
     C_QUICK_EPG_LOGO = 17024
     C_QUICK_EPG_CHANNEL = 17025
     C_QUICK_EPG_TIMEBAR = 14100
+    C_QUICK_EPG_TIMEBAR_HEAD = 14101
     C_QUICK_EPG_HEADER = 14601
     C_QUICK_EPG_FOOTER = 14602
     C_MAIN_OSD = 6000
@@ -707,7 +709,7 @@ class TVGuide(xbmcgui.WindowXML):
     def showListing(self, channel):
         programList = self.database.getChannelListing(channel)
         title = channel.title
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -717,16 +719,17 @@ class TVGuide(xbmcgui.WindowXML):
     def showNow(self):
         programList = self.database.getNowList()
         title = "Now"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
-            self._showContextMenu(programList[index])
+            program = programList[index]
+            self.playChannel(program.channel,program)
 
     def showNext(self):
         programList = self.database.getNextList()
         title = "Next"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -739,7 +742,7 @@ class TVGuide(xbmcgui.WindowXML):
             return
         programList = self.database.programSearch(search)
         title = "Program Search"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -748,7 +751,7 @@ class TVGuide(xbmcgui.WindowXML):
     def showReminders(self):
         programList = self.database.getNotifications()
         title = "Reminders"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -757,7 +760,7 @@ class TVGuide(xbmcgui.WindowXML):
     def showFullReminders(self):
         programList = self.database.getFullNotifications()
         title = "Reminders"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -782,7 +785,7 @@ class TVGuide(xbmcgui.WindowXML):
     def showFullAutoplays(self):
         programList = self.database.getFullAutoplays()
         title = "Autoplays"
-        d = ProgramListDialog(title,programList)
+        d = ProgramListDialog(title,programList,self.player,self.currentChannel,self.currentProgram)
         d.doModal()
         index = d.index
         if index > -1:
@@ -816,6 +819,9 @@ class TVGuide(xbmcgui.WindowXML):
 
         elif buttonClicked == PopupMenu.C_POPUP_CATEGORY:
             self.onRedrawEPG(self.channelIdx, self.viewStartDate)
+
+        elif buttonClicked == PopupMenu.C_POPUP_CHANNELS_VIEW:
+            self.showNow()
 
         elif buttonClicked == PopupMenu.C_POPUP_CHOOSE_STREAM:
             result = self.streamingService.detectStream(program.channel)
@@ -2103,6 +2109,17 @@ class TVGuide(xbmcgui.WindowXML):
                 pass
             control.setPosition(self._secondsToXposition(timeDelta.seconds), y)
 
+        control2 = self.getControl(self.C_MAIN_TIMEBAR_HEAD)
+        if control2:
+            (x, y) = control2.getPosition()
+            try:
+                # Sometimes raises:
+                # exceptions.RuntimeError: Unknown exception thrown from the call "setVisible"
+                control2.setVisible(timeDelta.days == 0)
+            except:
+                pass
+            control2.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+
         if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
             threading.Timer(1, self.updateTimebar).start()
 
@@ -2119,6 +2136,17 @@ class TVGuide(xbmcgui.WindowXML):
             except:
                 pass
             control.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+
+        control2 = self.getControl(self.C_QUICK_EPG_TIMEBAR_HEAD)
+        if control2:
+            (x, y) = control2.getPosition()
+            try:
+                # Sometimes raises:
+                # exceptions.RuntimeError: Unknown exception thrown from the call "setVisible"
+                control2.setVisible(timeDelta.days == 0)
+            except:
+                pass
+            control2.setPosition(self._secondsToXposition(timeDelta.seconds), y)
 
         if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
             threading.Timer(1, self.updateQuickTimebar).start()
@@ -2146,6 +2174,7 @@ class PopupMenu(xbmcgui.WindowXMLDialog):
     C_POPUP_LIBMOV = 80000
     C_POPUP_LIBTV = 80001
     C_POPUP_VIDEOADDONS = 80002
+    C_POPUP_CHANNELS_VIEW = 80004
 
 
     def __new__(cls, database, program, showRemind, showAutoplay, category, categories):
@@ -3057,14 +3086,17 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
     C_PROGRAM_LIST = 1000
     C_PROGRAM_LIST_TITLE = 1001
 
-    def __new__(cls,title,programs):
+    def __new__(cls,title,programs,player,currentChannel,currentProgram):
         return super(ProgramListDialog, cls).__new__(cls, 'script-tvguide-programlist.xml', ADDON.getAddonInfo('path'), SKIN)
 
-    def __init__(self,title,programs):
+    def __init__(self,title,programs,player,currentChannel,currentProgram):
         super(ProgramListDialog, self).__init__()
         self.title = title
         self.programs = programs
         self.index = -1
+        self.player = player
+        self.currentChannel = currentChannel
+        self.currentProgram = currentProgram
 
     def onInit(self):
         control = self.getControl(ProgramListDialog.C_PROGRAM_LIST_TITLE)
@@ -3098,8 +3130,9 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
                 elapsed = datetime.timedelta(0)
 
             day = self.formatDateTodayTomorrow(start)
-            start_str = start.strftime("%H:%M")
-            start_str = "%s %s" % (start_str,day)
+            start_str = self.formatTime(program.startDate)
+            end_str = self.formatTime(program.endDate)
+            start_str = "%s - %s" % (start_str,end_str)
             item.setProperty('StartTime', start_str)
 
             duration_str = "%d mins" % (duration.seconds / 60)
@@ -3134,6 +3167,9 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
 
             item.setProperty('ProgramImage', program.imageSmall if program.imageSmall else program.imageLarge)
 
+            if self.isProgramPlaying(program):
+                item.setProperty('PlayingNow','True')
+
             items.append(item)
 
         listControl = self.getControl(ProgramListDialog.C_PROGRAM_LIST)
@@ -3159,6 +3195,29 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
 
     def onFocus(self, controlId):
         pass
+
+    def isProgramPlaying(self, program):
+        if not self.player.isPlaying():
+            return False
+        if self.currentChannel and self.currentProgram:
+            currentTitle = self.currentProgram.title
+            currentStartDate = self.currentProgram.startDate
+            currentEndDate = self.currentProgram.endDate
+            programTitle = program.title
+            programStartDate = program.startDate
+            programEndDate = program.endDate
+            if currentTitle == programTitle and currentStartDate == programStartDate and currentEndDate == programEndDate and self.currentChannel.title == program.channel.title:
+                return True
+
+        return False
+
+    #TODO make global function
+    def formatTime(self, timestamp):
+        if timestamp:
+            format = xbmc.getRegion('time').replace(':%S', '').replace('%H%H', '%H')
+            return timestamp.strftime(format)
+        else:
+            return ''
 
     #TODO make global function
     def formatDateTodayTomorrow(self, timestamp):
