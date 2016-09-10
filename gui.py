@@ -941,13 +941,10 @@ class TVGuide(xbmcgui.WindowXML):
 
         title = '%s' % program.title
         if program.season is not None and program.episode is not None:
-            xbmc.log("program season %s program episode %s " % (program.season,program.episode))
             if int(program.season) < 10 and len(str(program.season)) == 1:
                 program.season = "0" + program.season
-                xbmc.log("program season less than 10 changed to %s " % (program.season))
             if int(program.episode) < 10 and len(str(program.episode)) == 1:
                 program.episode = "0" + program.episode
-                xbmc.log("program episode less than 10 changed to %s " % (program.episode))
             title += " [LIGHT]S%sE%s[/LIGHT]" % (program.season, program.episode)
 
         if self.mode == MODE_QUICK_EPG:
@@ -1285,7 +1282,14 @@ class TVGuide(xbmcgui.WindowXML):
         if not self.osdChannel:
             return #TODO this should not happen
         if self.osdProgram is not None:
-            self.setControlLabel(self.C_MAIN_OSD_TITLE, '[B]%s[/B]' % self.osdProgram.title)
+            title = '%s' % self.osdProgram.title
+            if self.osdProgram.season is not None and self.osdProgram.episode is not None:
+                if int(self.osdProgram.season) < 10 and len(str(self.osdProgram.season)) == 1:
+                    self.osdProgram.season = "0" + self.osdProgram.season
+                if int(self.osdProgram.episode) < 10 and len(str(self.osdProgram.episode)) == 1:
+                    self.osdProgram.episode = "0" + self.osdProgram.episode
+                title += " [LIGHT]S%sE%s[/LIGHT]" % (self.osdProgram.season, self.osdProgram.episode)
+            self.setControlLabel(self.C_MAIN_OSD_TITLE, '[B]%s[/B]' % title)
             if self.osdProgram.startDate or self.osdProgram.endDate:
                 self.setControlLabel(self.C_MAIN_OSD_TIME, '[B]%s - %s[/B]' % (
                     self.formatTime(self.osdProgram.startDate), self.formatTime(self.osdProgram.endDate)))
@@ -1309,7 +1313,14 @@ class TVGuide(xbmcgui.WindowXML):
             nextOsdProgram = self.database.getNextProgram(self.osdProgram)
             if nextOsdProgram:
                 self.setControlText(self.C_NEXT_OSD_DESCRIPTION, nextOsdProgram.description)
-                self.setControlLabel(self.C_NEXT_OSD_TITLE, nextOsdProgram.title)
+                title = '%s' % nextOsdProgram.title
+                if nextOsdProgram.season is not None and nextOsdProgram.episode is not None:
+                    if int(nextOsdProgram.season) < 10 and len(str(nextOsdProgram.season)) == 1:
+                        nextOsdProgram.season = "0" + nextOsdProgram.season
+                    if int(nextOsdProgram.episode) < 10 and len(str(nextOsdProgram.episode)) == 1:
+                        nextOsdProgram.episode = "0" + nextOsdProgram.episode
+                    title += " [LIGHT]S%sE%s[/LIGHT]" % (nextOsdProgram.season, nextOsdProgram.episode)
+                self.setControlLabel(self.C_NEXT_OSD_TITLE, title)
                 if nextOsdProgram.startDate or nextOsdProgram.endDate:
                     self.setControlLabel(self.C_NEXT_OSD_TIME, '%s - %s' % (
                         self.formatTime(nextOsdProgram.startDate), self.formatTime(nextOsdProgram.endDate)))
@@ -1334,7 +1345,14 @@ class TVGuide(xbmcgui.WindowXML):
         self.lastProgram = self.database.getCurrentProgram(self.lastChannel)
 
         if self.lastProgram is not None:
-            self.setControlLabel(self.C_MAIN_LAST_PLAYED_TITLE, '[B]%s[/B]' % self.lastProgram.title)
+            title = '%s' % self.lastProgram.title
+            if self.lastProgram.season is not None and self.lastProgram.episode is not None:
+                if int(self.lastProgram.season) < 10 and len(str(self.lastProgram.season)) == 1:
+                    self.lastProgram.season = "0" + self.lastProgram.season
+                if int(self.lastProgram.episode) < 10 and len(str(self.lastProgram.episode)) == 1:
+                    self.lastProgram.episode = "0" + self.lastProgram.episode
+                title += " [LIGHT]S%sE%s[/LIGHT]" % (self.lastProgram.season, self.lastProgram.episode)
+            self.setControlLabel(self.C_MAIN_LAST_PLAYED_TITLE, '[B]%s[/B]' % title)
             if self.lastProgram.startDate or self.lastProgram.endDate:
                 self.setControlLabel(self.C_MAIN_LAST_PLAYED_TIME, '[B]%s - %s[/B]' % (
                     self.formatTime(self.lastProgram.startDate), self.formatTime(self.lastProgram.endDate)))
@@ -1358,7 +1376,14 @@ class TVGuide(xbmcgui.WindowXML):
             nextLastPlayedProgram = self.database.getNextProgram(self.lastProgram)
             if nextLastPlayedProgram:
                 self.setControlText(self.C_NEXT_LAST_PLAYED_DESCRIPTION, nextLastPlayedProgram.description)
-                self.setControlLabel(self.C_NEXT_LAST_PLAYED_TITLE, nextLastPlayedProgram.title)
+                title = '%s' % nextLastPlayedProgram.title
+                if nextLastPlayedProgram.season is not None and nextLastPlayedProgram.episode is not None:
+                    if int(nextLastPlayedProgram.season) < 10 and len(str(nextLastPlayedProgram.season)) == 1:
+                        nextLastPlayedProgram.season = "0" + nextLastPlayedProgram.season
+                    if int(nextLastPlayedProgram.episode) < 10 and len(str(nextLastPlayedProgram.episode)) == 1:
+                        nextLastPlayedProgram.episode = "0" + nextLastPlayedProgram.episode
+                    title += " [LIGHT]S%sE%s[/LIGHT]" % (nextLastPlayedProgram.season, nextLastPlayedProgram.episode)
+                self.setControlLabel(self.C_NEXT_LAST_PLAYED_TITLE, title)
                 if nextLastPlayedProgram.startDate or nextLastPlayedProgram.endDate:
                     self.setControlLabel(self.C_NEXT_LAST_PLAYED_TIME, '%s - %s' % (
                         self.formatTime(nextLastPlayedProgram.startDate), self.formatTime(nextLastPlayedProgram.endDate)))
@@ -3111,7 +3136,13 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
         index = 0
         for program in self.programs:
 
-            label = program.title
+            label = '%s' % program.title
+            if program.season is not None and program.episode is not None:
+                if int(program.season) < 10 and len(str(program.season)) == 1:
+                    program.season = "0" + program.season
+                if int(program.episode) < 10 and len(str(program.episode)) == 1:
+                    program.episode = "0" + program.episode
+                label += " [LIGHT]S%sE%s[/LIGHT]" % (program.season, program.episode)
             name = ""
             icon = program.channel.logo
             item = xbmcgui.ListItem(label, name, icon)
