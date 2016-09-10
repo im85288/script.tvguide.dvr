@@ -62,7 +62,7 @@
         <control type="label">
             <description>time label</description>
             <right>10</right>
-            <top>240</top>
+            <top>245</top>
             <width>200</width>
             <height>30</height>
             <align>right</align>
@@ -80,7 +80,7 @@
                 <left>0</left>
                 <top>220</top>
                 <control type="label">
-                    <description>Channel label</description>
+                    <description>Airing label</description>
                     <left>180</left>
                     <top>26</top>
                     <width>180</width>
@@ -90,7 +90,7 @@
                     <shadowcolor>black</shadowcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>19148</label>
+                    <label>Airing</label>
                 </control>
                 <control type="label">
                     <description>Time label</description>
@@ -168,7 +168,7 @@
                             <font>font13</font>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <info>ListItem.Property(ChannelName)</info>
+                            <info>ListItem.Property(Airing)</info>
                         </control>
                         <control type="label">
                             <left>380</left>
@@ -236,7 +236,7 @@
                             <textcolor>black</textcolor>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <info>ListItem.Property(ChannelName)</info>
+                            <info>ListItem.Property(Airing)</info>
                         </control>
                         <control type="label">
                             <left>380</left>

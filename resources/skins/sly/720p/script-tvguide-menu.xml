@@ -67,12 +67,12 @@
             <textcolor>white</textcolor>
             <focusedcolor>black</focusedcolor>
             <label>Show Channels View</label>
-            <visible>true</visible>
+            <visible>false</visible>
         </control>
         <control type="list" id="7004">
             <description>categories</description>
             <left>20</left>
-            <top>204</top>
+            <top>145</top>
             <width>1280</width>
             <height>100</height>
             <visible>true</visible>
@@ -256,8 +256,8 @@
             <orientation>vertical</orientation>
             <itemgap>10</itemgap>
             <posx>20</posx>
-            <posy>315</posy>
-            <height>200</height>
+            <posy>260</posy>
+            <height>240</height>
             <onup>7004</onup>
             <control type="button" id="4000">
                 <!-- Watch Stream -->

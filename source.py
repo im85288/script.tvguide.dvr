@@ -1336,31 +1336,18 @@ class XMLTVSource(Source):
                     episode = None
                     is_movie = None
                     language = elem.find("title").get("lang")
-                    if meta_installed == True:
-                        episode_num = elem.findtext("episode-num")
-                        categories = elem.findall("category")
-                        for category in categories:
-                            if "movie" in category.text.lower() or channel.lower().find("sky movies") != -1 \
-                                    or "film" in category.text.lower():
-                                is_movie = "Movie"
-                                break
-
-                        if episode_num is not None:
-                            episode_num = unicode.encode(unicode(episode_num), 'ascii','ignore')
-                            if str.find(episode_num, ".") != -1:
-                                splitted = str.split(episode_num, ".")
-                                if splitted[0] != "":
-                                    season = int(splitted[0]) + 1
-                                    is_movie = None # fix for misclassification
-                                    if str.find(splitted[1], "/") != -1:
-                                        episode = int(splitted[1].split("/")[0]) + 1
-                                    elif splitted[1] != "":
-                                        episode = int(splitted[1]) + 1
-
-                            elif str.find(episode_num.lower(), "season") != -1 and episode_num != "Season ,Episode ":
-                                pattern = re.compile(r"Season\s(\d+).*?Episode\s+(\d+).*",re.I|re.U)
-                                season = int(re.sub(pattern, r"\1", episode_num))
-                                episode = (re.sub(pattern, r"\2", episode_num))
+                    episode_num = elem.findtext("episode-num")
+                    if episode_num is not None:
+                        episode_num = unicode.encode(unicode(episode_num), 'ascii','ignore')
+                        pattern = re.compile(r"^S?0*(\d+)?[xE]0*(\d+)",re.I|re.U)
+                        try:
+                            season = int(re.sub(pattern, r"\1", episode_num))
+                        except Exception:
+                            pass  # ignore
+                        try:
+                            episode = (re.sub(pattern, r"\2", episode_num))
+                        except Exception:
+                            pass  # ignore
 
                     result = Program(channel, elem.findtext('title'), self.parseXMLTVDate(elem.get('start')),
                                      self.parseXMLTVDate(elem.get('stop')), description, imageSmall=icon,

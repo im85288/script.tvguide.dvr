@@ -262,61 +262,62 @@
                 <width>1000</width>
                 <height>20</height>
                 <orientation>horizontal</orientation>
-                <itemgap>10</itemgap>
+                <itemgap>6</itemgap>
+                <align>left</align>
                 <visible>!Control.IsVisible(5000)</visible>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12311] - Listings</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12311]-Listings</label>
                 </control>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12312] - Now</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12312]-Now</label>
                 </control>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12313] - Next</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12313]-Next</label>
                 </control>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12314] - Search</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12314]-Search</label>
                 </control>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12315] - Reminders</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12315]-Reminders</label>
                 </control>
                 <control type="label">
                     <width>auto</width>
                     <height>20</height>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <font>font12_title</font>
-                    <textcolor>white</textcolor>
-                    <label>$LOCALIZE[12316] - AutoPlays</label>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12316]-AutoPlays</label>
                 </control>
             </control>
 
@@ -2576,9 +2577,9 @@
 
             <control type="label" id="17021">
                 <description>Program time</description>
-                <posx>1162</posx>
+                <left>20</left>
                 <posy>-165</posy>
-                <width>300</width>
+                <width>1240</width>
                 <height>30</height>
                 <textcolor>cc000000</textcolor>
                 <font>font13</font>

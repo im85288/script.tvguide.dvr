@@ -939,11 +939,16 @@ class TVGuide(xbmcgui.WindowXML):
         if program is None:
             return
 
-        title = '[B]%s[/B]' % program.title
+        title = '%s' % program.title
         if program.season is not None and program.episode is not None:
-            title += " [B]S%sE%s[/B]" % (program.season, program.episode)
-        if program.is_movie == "Movie":
-            title += " [B](Movie)[/B]"
+            xbmc.log("program season %s program episode %s " % (program.season,program.episode))
+            if int(program.season) < 10 and len(str(program.season)) == 1:
+                program.season = "0" + program.season
+                xbmc.log("program season less than 10 changed to %s " % (program.season))
+            if int(program.episode) < 10 and len(str(program.episode)) == 1:
+                program.episode = "0" + program.episode
+                xbmc.log("program episode less than 10 changed to %s " % (program.episode))
+            title += " [LIGHT]S%sE%s[/LIGHT]" % (program.season, program.episode)
 
         if self.mode == MODE_QUICK_EPG:
             self.setControlLabel(self.C_QUICK_EPG_TITLE, title)
@@ -3130,6 +3135,7 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
                 elapsed = datetime.timedelta(0)
 
             day = self.formatDateTodayTomorrow(start)
+            item.setProperty('Airing', day)
             start_str = self.formatTime(program.startDate)
             end_str = self.formatTime(program.endDate)
             start_str = "%s - %s" % (start_str,end_str)
