@@ -1071,7 +1071,7 @@
                 <posy>10</posy>
                 <width>620</width>
                 <height>50</height>
-                <textcolor>FF00B8FF</textcolor>
+                <textcolor>FF98fb98</textcolor>
                 <shadowcolor>22000000</shadowcolor>
                 <font>font24_title</font>
                 <align>center</align>
@@ -1527,7 +1527,7 @@
                 <width>430</width>
                 <height>50</height>
                 <label>[B]Title[/B]</label>
-                <textcolor>FF00B8FF</textcolor>
+                <textcolor>FF98fb98</textcolor>
                 <shadowcolor>22000000</shadowcolor>
                 <font>font13</font>
                 <aligny>center</aligny>
@@ -1744,7 +1744,7 @@
                 <width>430</width>
                 <height>50</height>
                 <label>[B]Title[/B]</label>
-                <textcolor>FF00B8FF</textcolor>
+                <textcolor>FF98fb98</textcolor>
                 <shadowcolor>22000000</shadowcolor>
                 <font>font13</font>
                 <aligny>center</aligny>
@@ -1956,7 +1956,7 @@
                 <width>430</width>
                 <height>50</height>
                 <label>[B]Title[/B]</label>
-                <textcolor>FF00B8FF</textcolor>
+                <textcolor>FF98fb98</textcolor>
                 <shadowcolor>22000000</shadowcolor>
                 <font>font13</font>
                 <aligny>center</aligny>
