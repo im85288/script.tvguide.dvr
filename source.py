@@ -1349,6 +1349,15 @@ class XMLTVSource(Source):
                         except Exception:
                             pass  # ignore
 
+                    categories = elem.findall("category")
+                    for category in categories:
+                        if "movie" in category.text.lower() or "film" in category.text.lower():
+                            is_movie = "Movie"
+                            break
+
+                    if channel.lower().find("hbo") != -1:
+                        is_movie = "Movie"
+
                     result = Program(channel, elem.findtext('title'), self.parseXMLTVDate(elem.get('start')),
                                      self.parseXMLTVDate(elem.get('stop')), description, imageSmall=icon,
                                      season = season, episode = episode, is_movie = is_movie, language= language)

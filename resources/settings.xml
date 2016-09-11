@@ -65,6 +65,8 @@
         <setting id="addon.match" label="Channel Matching" type="enum" default="2" values="Exact|Containing|Everything"/>
         <setting type="sep"/>
         <setting id="stop.on.exit" label="Stop Playing on Exit" type="bool" default="true" />
+        <setting id="themoviedbAPIKey" type="text" default="ae06df54334aa653354e9a010f4b81cb" visible="false"/>
+        <setting id="FanArtTVAPIKey" type="text" default="639191cb0774661597f28a47e7e2bad5" visible="false"/>
     </category>
 
     <category label="30114">

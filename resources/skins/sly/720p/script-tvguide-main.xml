@@ -119,6 +119,30 @@
             <height>1</height>
             <texture>background2.png</texture>
         </control>
+        <control type="image">
+            <description>workaround for texture not being loaded</description>
+            <posx>-10000</posx>
+            <posy>-10000</posy>
+            <width>1</width>
+            <height>1</height>
+            <texture>certifiedfresh.png</texture>
+        </control>
+        <control type="image">
+            <description>workaround for texture not being loaded</description>
+            <posx>-10000</posx>
+            <posy>-10000</posy>
+            <width>1</width>
+            <height>1</height>
+            <texture>tomatoe.png</texture>
+        </control>
+        <control type="image">
+            <description>workaround for texture not being loaded</description>
+            <posx>-10000</posx>
+            <posy>-10000</posy>
+            <width>1</width>
+            <height>1</height>
+            <texture>splat.png</texture>
+        </control>
 
         <control type="image">
             <description>background</description>
@@ -1076,7 +1100,42 @@
                 <font>font24_title</font>
                 <align>center</align>
                 <aligny>top</aligny>
+                <visible>!Control.IsVisible(5000) + StringCompare(Control.GetLabel(7028),)</visible>
+            </control>
+
+            <control type="image" id="7028">
+                <description>Banner</description>
+                <posx>500</posx>
+                <posy>4</posy>
+                <width>620</width>
+                <height>42</height>
+                <aspectratio align="center" aligny="top">keep</aspectratio>
+                <fadetime>500</fadetime>
                 <visible>!Control.IsVisible(5000)</visible>
+            </control>
+
+            <control type="image" id="7030">
+                <description>Rotten Tomatoes image</description>
+                <posx>930</posx>
+                <posy>4</posy>
+                <width>40</width>
+                <height>40</height>
+                <aspectratio align="left" aligny="top">keep</aspectratio>
+                <fadetime>500</fadetime>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7028),)</visible>
+            </control>
+
+            <control type="label" id="7031">
+                <description>Rotten Tomatoes rating</description>
+                <posx>970</posx>
+                <posy>10</posy>
+                <width>50</width>
+                <height>50</height>
+                <textcolor>ccffffff</textcolor>
+                <font>font13</font>
+                <align>left</align>
+                <aligny>top</aligny>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7028),) + !StringCompare(Control.GetLabel(7030),)</visible>
             </control>
 
             <control type="label" id="7025">
@@ -1127,6 +1186,18 @@
                 <textcolor>bbffffff</textcolor>
                 <font>font13</font>
                 <wrapmultiline>true</wrapmultiline>
+                <visible>!Control.IsVisible(5000) + StringCompare(Control.GetLabel(7032),)</visible>
+            </control>
+
+            <control type="textbox" id="7032">
+                <description>Rotten tomatoes description</description>
+                <posx>360</posx>
+                <posy>59</posy>
+                <width>898</width>
+                <height>142</height>
+                <textcolor>bbffffff</textcolor>
+                <font>font13</font>
+                <wrapmultiline>true</wrapmultiline>
                 <visible>!Control.IsVisible(5000)</visible>
             </control>
 
@@ -1166,6 +1237,18 @@
                 <height>35</height>
                 <align>left</align>
                 <aspectratio align="left">keep</aspectratio>
+                <fadetime>500</fadetime>
+                <visible>!Player.HasMedia</visible>
+                <visible>!Control.IsVisible(5000)</visible>
+            </control>
+
+            <control type="image" id="7027">
+                <description>Clear logo</description>
+                <posx>250</posx>
+                <posy>170</posy>
+                <width>100</width>
+                <height>35</height>
+                <aspectratio align="right">keep</aspectratio>
                 <fadetime>500</fadetime>
                 <visible>!Player.HasMedia</visible>
                 <visible>!Control.IsVisible(5000)</visible>

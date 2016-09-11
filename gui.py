@@ -41,6 +41,7 @@ from strings import *
 from rpc import RPC
 
 import streaming
+import downloadutils
 
 DEBUG = False
 
@@ -146,6 +147,11 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_LOGO = 7024
     C_MAIN_CHANNEL = 7025
     C_MAIN_PROGRESS = 7026
+    C_MAIN_CLEARLOGO = 7027
+    C_MAIN_BANNER = 7028
+    C_MAIN_TOMATOE_IMAGE = 7030
+    C_MAIN_TOMATOE_RATING = 7031
+    C_MAIN_TOMATOE_CONSENSUS = 7032
     C_MAIN_TIMEBAR = 4100
     C_MAIN_TIMEBAR_HEAD = 4101
     C_MAIN_LOADING = 4200
@@ -946,6 +952,54 @@ class TVGuide(xbmcgui.WindowXML):
             if int(program.episode) < 10 and len(str(program.episode)) == 1:
                 program.episode = "0" + program.episode
             title += " [LIGHT]S%sE%s[/LIGHT]" % (program.season, program.episode)
+
+        self.setControlImage(self.C_MAIN_CLEARLOGO, '')
+        self.setControlImage(self.C_MAIN_BANNER, '')
+        self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "")
+        self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
+        self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, '')
+        if program.is_movie == "Movie":
+            imdbid =  downloadutils.DownloadUtils().getExternalId(title)
+            artwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid)
+            if artwork:
+                clearlogo = artwork.get("clearlogo",None)
+                if clearlogo is not None:
+                    self.setControlImage(self.C_MAIN_CLEARLOGO, clearlogo)
+                else:
+                    self.setControlImage(self.C_MAIN_CLEARLOGO, '')
+                landscape = artwork.get("landscape",None)
+                if landscape is not None:
+                    program.imageSmall = landscape
+
+                fanart = artwork.get("fanart",None)
+                if fanart is not None:
+                    program.imageLarge = fanart
+                banner = artwork.get("banner",None)
+                if banner is not None:
+                    self.setControlImage(self.C_MAIN_BANNER, banner)
+                else:
+                    self.setControlImage(self.C_MAIN_BANNER, '')
+            if imdbid:
+                omdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                if omdbinfo:
+                    tomatometer = omdbinfo.get("tomatoMeter",None)
+                    if tomatometer and tomatometer != "N/A":
+                        self.setControlLabel(self.C_MAIN_TOMATOE_RATING, tomatometer)
+                    else:
+                        self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
+                    tomatoimage = omdbinfo.get("tomatoImage",None)
+                    tomatoconsensus = omdbinfo.get("tomatoConsensus",None)
+                    if tomatoconsensus and tomatoconsensus != "N/A":
+                        self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, tomatoconsensus)
+                    else:
+                        self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, '')
+                    if tomatoimage:
+                        if tomatoimage == 'certified':
+                            self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "certifiedfresh.png")
+                        elif int(tomatometer) > 59:
+                            self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "tomatoe.png")
+                        else:
+                            self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "splat.png")
 
         if self.mode == MODE_QUICK_EPG:
             self.setControlLabel(self.C_QUICK_EPG_TITLE, title)
@@ -3178,7 +3232,6 @@ class ProgramListDialog(xbmcgui.WindowXMLDialog):
             days = when.days
             hours, remainder = divmod(when.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            xbmc.log(repr((when.seconds,days,hours,minutes)))
             if days > 1:
                 when_str = "in %d days" % (days)
                 item.setProperty('When', when_str)
