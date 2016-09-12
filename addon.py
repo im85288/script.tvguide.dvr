@@ -25,8 +25,10 @@
 #  http://www.gnu.org/copyleft/gpl.html
 #
 import gui
+import downloadutils
 
 try:
+    downloadutils.DownloadUtils()._getImdbTop250()
     w = gui.TVGuide()
     w.doModal()
     del w

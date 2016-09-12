@@ -152,6 +152,9 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_TOMATOE_IMAGE = 7030
     C_MAIN_TOMATOE_RATING = 7031
     C_MAIN_TOMATOE_CONSENSUS = 7032
+    C_MAIN_IMAGE_LARGE = 7033
+    C_MAIN_IMDB_RATING = 7034
+    C_MAIN_IMDB250_RATING = 7035
     C_MAIN_TIMEBAR = 4100
     C_MAIN_TIMEBAR_HEAD = 4101
     C_MAIN_LOADING = 4200
@@ -190,10 +193,12 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_OSD_CHANNEL_TITLE = 6005
     C_MAIN_OSD_CHANNEL_IMAGE = 6006
     C_MAIN_OSD_PROGRESS = 6011
+    C_MAIN_OSD_CHARACTER_ART = 6012
     C_NEXT_OSD_DESCRIPTION = 6007
     C_NEXT_OSD_TITLE = 6008
     C_NEXT_OSD_TIME = 6009
     C_NEXT_OSD_CHANNEL_IMAGE = 6010
+    C_NEXT_OSD_CHARACTER_ART = 6013
     C_MAIN_VIDEO_BACKGROUND = 5555
     C_MAIN_VIDEO_PIP = 6666
     C_MAIN_LAST_PLAYED = 8000
@@ -944,37 +949,62 @@ class TVGuide(xbmcgui.WindowXML):
 
         if program is None:
             return
-
+        awards = None
         title = '%s' % program.title
-        if program.season is not None and program.episode is not None:
-            if int(program.season) < 10 and len(str(program.season)) == 1:
-                program.season = "0" + program.season
-            if int(program.episode) < 10 and len(str(program.episode)) == 1:
-                program.episode = "0" + program.episode
-            title += " [LIGHT]S%sE%s[/LIGHT]" % (program.season, program.episode)
 
         self.setControlImage(self.C_MAIN_CLEARLOGO, '')
         self.setControlImage(self.C_MAIN_BANNER, '')
         self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "")
         self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
         self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, '')
-        if program.is_movie == "Movie":
-            imdbid =  downloadutils.DownloadUtils().getExternalId(title)
-            artwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid)
+        self.setControlImage(self.C_MAIN_IMAGE_LARGE, '')
+        self.setControlLabel(self.C_MAIN_IMDB_RATING, '')
+        self.setControlLabel(self.C_MAIN_IMDB250_RATING, 'N/A')
+        if program.is_movie == "Movie" or program.is_movie == "TV":
+            if program.is_movie == "Movie":
+                media_type = 'movie'
+            else:
+                media_type = 'tv'
+            if program.imdbid is None and program.is_movie == "Movie":
+                imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                self.database.setImdbId(program, imdbid)
+            elif program.imdbid and program.is_movie == "Movie":
+                imdbid =  program.imdbid
+
+            if program.tvdbid is None and program.is_movie == "TV":
+                imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                self.database.setTvdbId(program, imdbid)
+            elif program.tvdbid and program.is_movie == "TV":
+                imdbid =  program.tvdbid
+
+            databaseartwork = self.database.getArtworkForId(imdbid)
+            if databaseartwork is not None:
+                artwork = databaseartwork
+            else:
+                downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
+                self.database.setArtworkForId(downloadedartwork,imdbid)
+                artwork = self.database.getArtworkForId(imdbid)
+
+            if program.imdbid is None and program.is_movie == "TV":
+                imdbid =  downloadutils.DownloadUtils().getImdbId(title,media_type)
+                self.database.setImdbId(program, imdbid)
+            elif program.imdbid and program.is_movie == "TV":
+                imdbid = program.imdbid
+
             if artwork:
-                clearlogo = artwork.get("clearlogo",None)
+                clearlogo = artwork.clearlogo
                 if clearlogo is not None:
                     self.setControlImage(self.C_MAIN_CLEARLOGO, clearlogo)
                 else:
                     self.setControlImage(self.C_MAIN_CLEARLOGO, '')
-                landscape = artwork.get("landscape",None)
+                landscape = artwork.landscape
                 if landscape is not None:
                     program.imageSmall = landscape
 
-                fanart = artwork.get("fanart",None)
+                fanart = artwork.fanart
                 if fanart is not None:
                     program.imageLarge = fanart
-                banner = artwork.get("banner",None)
+                banner = artwork.banner
                 if banner is not None:
                     self.setControlImage(self.C_MAIN_BANNER, banner)
                 else:
@@ -989,17 +1019,38 @@ class TVGuide(xbmcgui.WindowXML):
                         self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
                     tomatoimage = omdbinfo.get("tomatoImage",None)
                     tomatoconsensus = omdbinfo.get("tomatoConsensus",None)
+                    year = omdbinfo.get("Year",None)
+                    awards = omdbinfo.get("Awards",None)
                     if tomatoconsensus and tomatoconsensus != "N/A":
-                        self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, tomatoconsensus)
+                        if year and year != "N/A":
+                            tomatoconsensus += " (%s)" % (year)
+                        if awards and awards != "N/A":
+                            tomatoconsensus += "[CR][CR][I]%s[/I]" % (awards)
+                        if program.is_movie == "Movie":
+                            self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, tomatoconsensus)
+                        else:
+                            awards = awards
                     else:
                         self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, '')
-                    if tomatoimage:
+                    if tomatoimage and tomatometer and tomatometer != "N/A":
                         if tomatoimage == 'certified':
                             self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "certifiedfresh.png")
                         elif int(tomatometer) > 59:
                             self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "tomatoe.png")
                         else:
                             self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "splat.png")
+
+                    imdbrating = omdbinfo.get("imdbRating",None)
+                    if imdbrating and imdbrating != "N/A":
+                        self.setControlLabel(self.C_MAIN_IMDB_RATING, imdbrating)
+                    else:
+                        self.setControlLabel(self.C_MAIN_IMDB_RATING, '')
+                    top250rating = downloadutils.DownloadUtils().getImdbTop250(imdbid)
+                    if top250rating and top250rating != "N/A":
+                        self.setControlLabel(self.C_MAIN_IMDB250_RATING, top250rating)
+                    else:
+                        self.setControlLabel(self.C_MAIN_IMDB250_RATING, 'N/A')
+
 
         if self.mode == MODE_QUICK_EPG:
             self.setControlLabel(self.C_QUICK_EPG_TITLE, title)
@@ -1010,6 +1061,14 @@ class TVGuide(xbmcgui.WindowXML):
                 self.setControlLabel(self.C_QUICK_EPG_TIME, '')
             if program.description:
                 description = program.description
+                if program.season is not None and program.episode is not None:
+                    if int(program.season) < 10 and len(str(program.season)) == 1:
+                        program.season = "0" + program.season
+                    if int(program.episode) < 10 and len(str(program.episode)) == 1:
+                        program.episode = "0" + program.episode
+                    description += " [LIGHT](S%sE%s)[/LIGHT]" % (program.season, program.episode)
+                if awards:
+                    description += "[CR][CR][I]%s[/I]" % (awards)
             else:
                 description = ""
             self.setControlText(self.C_QUICK_EPG_DESCRIPTION, description)
@@ -1033,6 +1092,14 @@ class TVGuide(xbmcgui.WindowXML):
                     programprogresscontrol.setPercent(percent)
             if program.description:
                 description = program.description
+                if program.season is not None and program.episode is not None:
+                    if int(program.season) < 10 and len(str(program.season)) == 1:
+                        program.season = "0" + program.season
+                    if int(program.episode) < 10 and len(str(program.episode)) == 1:
+                        program.episode = "0" + program.episode
+                    description += " [LIGHT](S%sE%s)[/LIGHT]" % (program.season, program.episode)
+                if awards:
+                    description += "[CR][CR][I]%s[/I]" % (awards)
             else:
                 description = ""
             self.setControlText(self.C_MAIN_DESCRIPTION, description)
@@ -1050,8 +1117,9 @@ class TVGuide(xbmcgui.WindowXML):
             else:
                 self.setControlImage(self.C_MAIN_IMAGE, '')
             if program.imageLarge is not None:
-                self.setControlImage(self.C_MAIN_IMAGE, program.imageLarge)
-
+                self.setControlImage(self.C_MAIN_IMAGE_LARGE, program.imageLarge)
+            else:
+                self.setControlImage(self.C_MAIN_IMAGE_LARGE, '')
 
             if ADDON.getSetting('program.background.enabled') == 'true' and program.imageSmall is not None:
                 self.setControlImage(self.C_MAIN_BACKGROUND, program.imageSmall)
@@ -1335,8 +1403,48 @@ class TVGuide(xbmcgui.WindowXML):
             self.osdChannel = self.currentChannel
         if not self.osdChannel:
             return #TODO this should not happen
+
+        self.setControlImage(self.C_MAIN_OSD_CHARACTER_ART, '')
+        self.setControlImage(self.C_NEXT_OSD_CHARACTER_ART, '')
         if self.osdProgram is not None:
             title = '%s' % self.osdProgram.title
+            if self.osdProgram.is_movie == "Movie" or self.osdProgram.is_movie == "TV":
+                if self.osdProgram.is_movie == "Movie":
+                    media_type = 'movie'
+                else:
+                    media_type = 'tv'
+                if self.osdProgram.imdbid is None and self.osdProgram.is_movie == "Movie":
+                    imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                    self.database.setImdbId(self.osdProgram, imdbid)
+                elif self.osdProgram.imdbid and self.osdProgram.is_movie == "Movie":
+                    imdbid =  self.osdProgram.imdbid
+
+                if self.osdProgram.tvdbid is None and self.osdProgram.is_movie == "TV":
+                    imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                    self.database.setTvdbId(self.osdProgram, imdbid)
+                elif self.osdProgram.tvdbid and self.osdProgram.is_movie == "TV":
+                    imdbid =  self.osdProgram.tvdbid
+
+                databaseartwork = self.database.getArtworkForId(imdbid)
+                if databaseartwork is not None:
+                    artwork = databaseartwork
+                else:
+                    downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
+                    self.database.setArtworkForId(downloadedartwork,imdbid)
+                    artwork = self.database.getArtworkForId(imdbid)
+                if artwork:
+                    landscape = artwork.landscape
+                    if landscape is not None:
+                        self.osdProgram.imageSmall = landscape
+
+                    characterart = artwork.characterart
+                    if characterart is not None:
+                        self.setControlImage(self.C_MAIN_OSD_CHARACTER_ART, characterart)
+                    else:
+                        clearart = artwork.clearart
+                        if clearart is not None:
+                            self.setControlImage(self.C_MAIN_OSD_CHARACTER_ART, clearart)
+
             if self.osdProgram.season is not None and self.osdProgram.episode is not None:
                 if int(self.osdProgram.season) < 10 and len(str(self.osdProgram.season)) == 1:
                     self.osdProgram.season = "0" + self.osdProgram.season
@@ -1368,6 +1476,41 @@ class TVGuide(xbmcgui.WindowXML):
             if nextOsdProgram:
                 self.setControlText(self.C_NEXT_OSD_DESCRIPTION, nextOsdProgram.description)
                 title = '%s' % nextOsdProgram.title
+                if nextOsdProgram.is_movie == "Movie" or nextOsdProgram.is_movie == "TV":
+                    if nextOsdProgram.is_movie == "Movie":
+                        media_type = 'movie'
+                    else:
+                        media_type = 'tv'
+                    if nextOsdProgram.imdbid is None and nextOsdProgram.is_movie == "Movie":
+                        imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                        self.database.setImdbId(nextOsdProgram, imdbid)
+                    elif nextOsdProgram.imdbid and nextOsdProgram.is_movie == "Movie":
+                        imdbid =  nextOsdProgram.imdbid
+
+                    if nextOsdProgram.tvdbid is None and nextOsdProgram.is_movie == "TV":
+                        imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+                        self.database.setTvdbId(nextOsdProgram, imdbid)
+                    elif nextOsdProgram.tvdbid and nextOsdProgram.is_movie == "TV":
+                        imdbid =  nextOsdProgram.tvdbid
+
+                    databaseartwork = self.database.getArtworkForId(imdbid)
+                    if databaseartwork is not None:
+                        artwork = databaseartwork
+                    else:
+                        downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
+                        self.database.setArtworkForId(downloadedartwork,imdbid)
+                        artwork = self.database.getArtworkForId(imdbid)
+                    if artwork:
+                        landscape = artwork.landscape
+                        if landscape is not None:
+                            nextOsdProgram.imageSmall = landscape
+                        characterart = artwork.characterart
+                        if characterart is not None:
+                            self.setControlImage(self.C_NEXT_OSD_CHARACTER_ART, characterart)
+                        else:
+                            clearart = artwork.clearart
+                            if clearart is not None:
+                                self.setControlImage(self.C_NEXT_OSD_CHARACTER_ART, clearart)
                 if nextOsdProgram.season is not None and nextOsdProgram.episode is not None:
                     if int(nextOsdProgram.season) < 10 and len(str(nextOsdProgram.season)) == 1:
                         nextOsdProgram.season = "0" + nextOsdProgram.season

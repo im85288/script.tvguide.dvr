@@ -64,10 +64,35 @@ class Channel(object):
         return 'Channel(id=%s, title=%s, logo=%s, streamUrl=%s)' \
                % (self.id, self.title, self.logo, self.streamUrl)
 
+class Artwork(object):
+    def __init__(self, clearlogo, discart, clearart, banner, poster, landscape, fanart,characterart):
+        """
+
+        @param channel:
+        @type channel: source.Channel
+        @param title:
+        @param startDate:
+        @param endDate:
+        @param description:
+        @param imageLarge:
+        @param imageSmall:
+        """
+        self.clearlogo = clearlogo
+        self.discart = discart
+        self.clearart = clearart
+        self.banner = banner
+        self.poster = poster
+        self.landscape = landscape
+        self.fanart = fanart
+        self.characterart = characterart
+
+    def __repr__(self):
+        return 'Artwork(clearlogo=%s, discart=%s, clearart=%s, banner=%s, poster=%s, landscape=%s, ' \
+               'fanart=%s, characterart=%s)' % (self.clearlogo, self.discart, self.clearart, self.banner, self.poster, self.landscape,self.fanart, self.characterart)
 
 class Program(object):
     def __init__(self, channel, title, startDate, endDate, description, imageLarge=None, imageSmall=None,
-                 notificationScheduled=None, autoplayScheduled=None, season=None, episode=None, is_movie = False, language = "en"):
+                 notificationScheduled=None, autoplayScheduled=None, season=None, episode=None, is_movie = False, language = "en",imdbid=None,tvdbid=None):
         """
 
         @param channel:
@@ -92,13 +117,15 @@ class Program(object):
         self.episode = episode
         self.is_movie = is_movie
         self.language = language
+        self.imdbid = imdbid
+        self.tvdbid = tvdbid
 
     def __repr__(self):
         return 'Program(channel=%s, title=%s, startDate=%s, endDate=%s, description=%s, imageLarge=%s, ' \
-               'imageSmall=%s, episode=%s, season=%s, is_movie=%s)' % (self.channel, self.title, self.startDate,
+               'imageSmall=%s, episode=%s, season=%s, is_movie=%s, language=%s, imdbid=%s, tvdbid=%s)' % (self.channel, self.title, self.startDate,
                                                                        self.endDate, self.description, self.imageLarge,
                                                                        self.imageSmall, self.season, self.episode,
-                                                                       self.is_movie)
+                                                                       self.is_movie,self.language,self.imdbid,self.tvdbid)
 
 
 class SourceException(Exception):
@@ -396,10 +423,10 @@ class Database(object):
                         channel = program.channel
 
                     c.execute(
-                        'INSERT INTO programs(channel, title, start_date, end_date, description, image_large, image_small, season, episode, is_movie, language, source, updates_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        'INSERT INTO programs(channel, title, start_date, end_date, description, image_large, image_small, season, episode, is_movie, language, imdbid, tvdbid, source, updates_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         [channel, program.title, program.startDate, program.endDate, program.description,
                          program.imageLarge, program.imageSmall, program.season, program.episode, program.is_movie,
-                         program.language, self.source.KEY, updatesId])
+                         program.language, program.imdbid, program.tvdbid,self.source.KEY, updatesId])
 
             # channels updated
             c.execute("UPDATE sources SET channels_updated=? WHERE id=?", [datetime.datetime.now(), self.source.KEY])
@@ -602,7 +629,6 @@ class Database(object):
         c.close()
         return channelList
 
-
     def programSearch(self, search):
         return self._invokeAndBlockForResult(self._programSearch, search)
 
@@ -618,8 +644,8 @@ class Database(object):
             except: return
             for row in c:
                 program = Program(channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                              row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                              row['is_movie'], row['language'])
+                              row['image_large'], row['image_small'], None,None, row['season'], row['episode'],
+                              row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
                 programList.append(program)
         c.close()
         return programList
@@ -635,8 +661,8 @@ class Database(object):
         except: return
         for row in c:
             program = Program(channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                          row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                          row['is_movie'], row['language'])
+                          row['image_large'], row['image_small'], None,None, row['season'], row['episode'],
+                          row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
             programList.append(program)
         c.close()
 
@@ -657,8 +683,8 @@ class Database(object):
             row = c.fetchone()
             if row:
                 program = Program(channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                              row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                              row['is_movie'], row['language'])
+                              row['image_large'], row['image_small'], None, None,row['season'], row['episode'],
+                              row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
                 programList.append(program)
         c.close()
         return programList
@@ -678,8 +704,8 @@ class Database(object):
             row = c.fetchone()
             if row:
                 program = Program(channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                              row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                              row['is_movie'], row['language'])
+                              row['image_large'], row['image_small'], None, None,row['season'], row['episode'],
+                              row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
                 programList.append(program)
         c.close()
         return programList
@@ -704,8 +730,8 @@ class Database(object):
         if row:
             try:
                 program = Program(channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                              row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                              row['is_movie'], row['language'])
+                              row['image_large'], row['image_small'], None, None, row['season'], row['episode'],
+                              row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
             except:
                 return
         c.close()
@@ -725,8 +751,8 @@ class Database(object):
             row = c.fetchone()
             if row:
                     nextProgram = Program(program.channel, row['title'], row['start_date'], row['end_date'], row['description'],
-                                      row['image_large'], row['image_small'], None, row['season'], row['episode'],
-                                      row['is_movie'], row['language'])
+                                      row['image_large'], row['image_small'], None, None,row['season'], row['episode'],
+                                      row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
             c.close()
             return nextProgram
         except:
@@ -745,8 +771,8 @@ class Database(object):
             row = c.fetchone()
             if row:
                 previousProgram = Program(program.channel, row['title'], row['start_date'], row['end_date'],
-                                          row['description'], row['image_large'], row['image_small'], None, row['season'],
-                                          row['episode'], row['is_movie'], row['language'])
+                                          row['description'], row['image_large'], row['image_small'], None, None,row['season'],
+                                          row['episode'], row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
             c.close()
             return previousProgram
         except:
@@ -780,7 +806,7 @@ class Database(object):
         for row in c:
             program = Program(channelMap[row['channel']], row['title'], row['start_date'], row['end_date'],
                               row['description'], row['image_large'], row['image_small'], row['notification_scheduled'], row['autoplay_scheduled'],
-                              row['season'], row['episode'], row['is_movie'], row['language'])
+                              row['season'], row['episode'], row['is_movie'], row['language'], row['imdbid'], row['tvdbid'])
             programList.append(program)
 
         return programList
@@ -869,6 +895,67 @@ class Database(object):
 
         return None
 
+    def setImdbId(self, program, imdbid):
+        if program is not None:
+            self._invokeAndBlockForResult(self._setImdbId, program, imdbid)
+            # no result, but block until operation is
+
+    def _setImdbId(self, program, imdbid):
+        if program is not None:
+            c = self.conn.cursor()
+            if imdbid:
+                c.execute('UPDATE OR REPLACE programs SET imdbid=? WHERE channel=? AND start_date=? AND end_date=?' , (imdbid, program.channel.id,program.startDate,program.endDate))
+            self.conn.commit()
+            c.close()
+
+    def setTvdbId(self, program, tvdbid):
+        if program is not None:
+            self._invokeAndBlockForResult(self._setTvdbId, program, tvdbid)
+            # no result, but block until operation is
+
+    def _setTvdbId(self, program, tvdbid):
+        if program is not None:
+            c = self.conn.cursor()
+            if tvdbid:
+                c.execute('UPDATE OR REPLACE programs SET tvdbid=? WHERE channel=? AND start_date=? AND end_date=?' , (tvdbid, program.channel.id,program.startDate,program.endDate))
+            self.conn.commit()
+            c.close()
+
+    def setArtworkForId(self, artwork, id):
+        if artwork is not None:
+            self._invokeAndBlockForResult(self._setArtworkForId, artwork, id)
+            # no result, but block until operation is
+
+    def _setArtworkForId(self, artwork, id):
+        if artwork is not None:
+            c = self.conn.cursor()
+            if id:
+                c.execute('INSERT INTO artwork(id, clearlogo, discart, clearart, banner, poster, landscape, fanart, characterart) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                          [id, artwork.get("clearlogo"), artwork.get("discart"), artwork.get("clearart"), artwork.get("banner"),
+                           artwork.get("poster"), artwork.get("landscape"), artwork.get("fanart"), artwork.get("characterart")])
+            self.conn.commit()
+            c.close()
+
+    def getArtworkForId(self, id):
+        return self._invokeAndBlockForResult(self._getArtworkForId, id)
+
+    def _getArtworkForId(self, id):
+        try:
+            artwork = None
+            c = self.conn.cursor()
+            c.execute(
+                'SELECT * FROM artwork WHERE id=?',
+                [id])
+            row = c.fetchone()
+            if row:
+                artwork = Artwork(row['clearlogo'], row['discart'], row['clearart'],
+                                          row['banner'], row['poster'], row['landscape'], row['fanart'],
+                                          row['characterart'])
+            c.close()
+            return artwork
+        except:
+            return
+
     @staticmethod
     def adapt_datetime(ts):
         # http://docs.python.org/2/library/sqlite3.html#registering-an-adapter-callable
@@ -934,6 +1021,21 @@ class Database(object):
                 c.execute('CREATE INDEX program_list_idx ON programs(source, channel, start_date, end_date)')
                 c.execute('CREATE INDEX start_date_idx ON programs(start_date)')
                 c.execute('CREATE INDEX end_date_idx ON programs(end_date)')
+
+            if version < [1, 3, 3]:
+                # Recreate tables with imdbid and tvdbid
+                c.execute('UPDATE version SET major=1, minor=3, patch=3')
+                c.execute('DROP TABLE programs')
+                c.execute(
+                    'CREATE TABLE programs(channel TEXT, title TEXT, start_date TIMESTAMP, end_date TIMESTAMP, description TEXT, image_large TEXT, image_small TEXT, season TEXT, episode TEXT, is_movie TEXT, language TEXT, source TEXT, imdbid TEXT, tvdbid TEXT, updates_id INTEGER, FOREIGN KEY(channel, source) REFERENCES channels(id, source) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(updates_id) REFERENCES updates(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)')
+                c.execute('CREATE INDEX program_list_idx ON programs(source, channel, start_date, end_date)')
+                c.execute('CREATE INDEX start_date_idx ON programs(start_date)')
+                c.execute('CREATE INDEX end_date_idx ON programs(end_date)')
+            if version < [1, 3, 4]:
+                # Create artwork table
+                c.execute('UPDATE version SET major=1, minor=3, patch=4')
+                c.execute(
+                    'CREATE TABLE artwork(id TEXT PRIMARY KEY, clearlogo TEXT, discart TEXT, clearart TEXT, banner TEXT, poster TEXT, landscape TEXT, fanart TEXT, characterart TEXT)')
 
             c.execute(
                 "CREATE TABLE IF NOT EXISTS autoplays(channel TEXT, program_title TEXT, source TEXT, FOREIGN KEY(channel, source) REFERENCES channels(id, source) ON DELETE CASCADE)")
@@ -1338,6 +1440,7 @@ class XMLTVSource(Source):
                     language = elem.find("title").get("lang")
                     episode_num = elem.findtext("episode-num")
                     if episode_num is not None:
+                        is_movie = "TV"
                         episode_num = unicode.encode(unicode(episode_num), 'ascii','ignore')
                         pattern = re.compile(r"^S?0*(\d+)?[xE]0*(\d+)",re.I|re.U)
                         try:
@@ -1360,7 +1463,7 @@ class XMLTVSource(Source):
 
                     result = Program(channel, elem.findtext('title'), self.parseXMLTVDate(elem.get('start')),
                                      self.parseXMLTVDate(elem.get('stop')), description, imageSmall=icon,
-                                     season = season, episode = episode, is_movie = is_movie, language= language)
+                                     season = season, episode = episode, is_movie = is_movie, language= language,imdbid=None,tvdbid=None)
 
                 elif elem.tag == "channel":
                     cid = elem.get("id").replace("'", "")  # Make ID safe to use as ' can cause crashes!

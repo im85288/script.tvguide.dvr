@@ -144,6 +144,7 @@
             <texture>splat.png</texture>
         </control>
 
+
         <control type="image">
             <description>background</description>
             <posx>0</posx>
@@ -151,9 +152,26 @@
             <width>1280</width>
             <height>720</height>
             <texture>background.png</texture>
-            <visible>true</visible>
+            <visible>StringCompare(Control.GetLabel(7033),)</visible>
         </control>
-
+        <control type="image" id="7033">
+            <description>Program large image</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1280</width>
+            <height>720</height>
+            <animation effect="fade" start="100" end="30" time="200" condition="true">Conditional</animation>
+            <visible>!Control.IsVisible(5000)</visible>
+        </control>
+        <control type="image">
+            <description>background</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1280</width>
+            <height>720</height>
+            <texture>background2.png</texture>
+            <visible>!StringCompare(Control.GetLabel(7033),)</visible>
+        </control>
         <control type="image">
             <description>blackout on play</description>
             <posx>0</posx>
@@ -1138,6 +1156,168 @@
                 <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7028),) + !StringCompare(Control.GetLabel(7030),)</visible>
             </control>
 
+            <control type="group">
+                <posx>1000</posx>
+                <posy>4</posy>
+                <height>40</height>
+                <width>65</width>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7034),) + !StringCompare(Control.GetLabel(7028),) + !StringCompare(Control.GetLabel(7030),)</visible>
+                <control type="image">
+                    <height>40</height>
+                    <width>64</width>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>ff000000</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <height>40</height>
+                    <width>65</width>
+                    <bordersize>2</bordersize>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>darkgrey</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <!--imdb logo-->
+                    <top>0</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <bordersize>2</bordersize>
+                    <texture>imdb_logo.png</texture>
+                </control>
+                <control type="label" id="7034">
+                    <!--Rating modern-->
+                    <top>18</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font13</font>
+                    <textcolor>ddffffff</textcolor>
+                </control>
+            </control>
+
+            <control type="group">
+                <posx>1070</posx>
+                <posy>4</posy>
+                <height>40</height>
+                <width>65</width>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7035),N/A) + !StringCompare(Control.GetLabel(7028),) + !StringCompare(Control.GetLabel(7030),)</visible>
+                <control type="image">
+                    <height>40</height>
+                    <width>64</width>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>ff000000</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <height>40</height>
+                    <width>65</width>
+                    <bordersize>2</bordersize>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>darkgrey</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <!--imdb logo-->
+                    <top>0</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <bordersize>2</bordersize>
+                    <texture>imdb_logo_250.png</texture>
+                </control>
+                <control type="label" id="7035">
+                    <top>18</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font13</font>
+                    <textcolor>ddffffff</textcolor>
+                </control>
+            </control>
+
+            <control type="group">
+                <posx>930</posx>
+                <posy>4</posy>
+                <height>40</height>
+                <width>65</width>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7034),) + !StringCompare(Control.GetLabel(7028),) + StringCompare(Control.GetLabel(7030),)</visible>
+                <control type="image">
+                    <height>40</height>
+                    <width>64</width>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>ff000000</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <height>40</height>
+                    <width>65</width>
+                    <bordersize>2</bordersize>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>darkgrey</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <!--imdb logo-->
+                    <top>0</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <bordersize>2</bordersize>
+                    <texture>imdb_logo.png</texture>
+                </control>
+                <control type="label" id="7034">
+                    <!--Rating modern-->
+                    <top>18</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font13</font>
+                    <textcolor>ddffffff</textcolor>
+                </control>
+            </control>
+
+            <control type="group">
+                <posx>1000</posx>
+                <posy>4</posy>
+                <height>40</height>
+                <width>65</width>
+                <visible>!Control.IsVisible(5000) + !StringCompare(Control.GetLabel(7035),N/A) + !StringCompare(Control.GetLabel(7028),) + StringCompare(Control.GetLabel(7030),)</visible>
+                <control type="image">
+                    <height>40</height>
+                    <width>64</width>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>ff000000</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <height>40</height>
+                    <width>65</width>
+                    <bordersize>2</bordersize>
+                    <texture border="5">panel.png</texture>
+                    <colordiffuse>darkgrey</colordiffuse>
+                    <aspectratio>stretch</aspectratio>
+                </control>
+                <control type="image">
+                    <!--imdb logo-->
+                    <top>0</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <bordersize>2</bordersize>
+                    <texture>imdb_logo_250.png</texture>
+                </control>
+                <control type="label" id="7035">
+                    <top>18</top>
+                    <width>64</width>
+                    <height>20</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font13</font>
+                    <textcolor>ddffffff</textcolor>
+                </control>
+            </control>
+
             <control type="label" id="7025">
                 <description>Channel name</description>
                 <posx>360</posx>
@@ -1148,11 +1328,11 @@
                 <font>font13</font>
                 <align>left</align>
                 <aligny>top</aligny>
-                <visible>!Player.HasMedia | [Player.HasMedia + StringCompare(Control.GetLabel(70244),)]</visible>
+                <visible>StringCompare(Control.GetLabel(7024),)</visible>
                 <visible>!Control.IsVisible(5000)</visible>
             </control>
 
-            <control type="image" id="70244">
+            <control type="image" id="7024">
                 <description>Channel logo</description>
                 <posx>360</posx>
                 <posy>10</posy>
@@ -1161,9 +1341,9 @@
                 <align>left</align>
                 <aspectratio align="left">keep</aspectratio>
                 <fadetime>500</fadetime>
-                <texture>$INFO[Control.GetLabel(7024)]</texture>
-                <visible>Player.HasMedia</visible>
+                <visible>!Control.IsVisible(5000)</visible>
             </control>
+
             <control type="label" id="7021">
                 <description>Program time</description>
                 <posx>1260</posx>
@@ -1202,7 +1382,7 @@
             </control>
 
             <control type="image" id="7023">
-                <description>Program logo / Source logo</description>
+                <description>Program small image</description>
                 <posx>2</posx>
                 <posy>10</posy>
                 <width>350</width>
@@ -1229,28 +1409,15 @@
                 <visible>!Control.IsVisible(5000)</visible>
             </control>
 
-            <control type="image" id="7024">
-                <description>Channel logo</description>
-                <posx>5</posx>
-                <posy>170</posy>
-                <width>100</width>
-                <height>35</height>
-                <align>left</align>
-                <aspectratio align="left">keep</aspectratio>
-                <fadetime>500</fadetime>
-                <visible>!Player.HasMedia</visible>
-                <visible>!Control.IsVisible(5000)</visible>
-            </control>
-
             <control type="image" id="7027">
                 <description>Clear logo</description>
                 <posx>250</posx>
-                <posy>170</posy>
+                <posy>12</posy>
                 <width>100</width>
                 <height>35</height>
                 <aspectratio align="right">keep</aspectratio>
                 <fadetime>500</fadetime>
-                <visible>!Player.HasMedia</visible>
+                <visible>false</visible>
                 <visible>!Control.IsVisible(5000)</visible>
             </control>
 
@@ -1547,6 +1714,7 @@
                 <texture colordiffuse="FF1E90FF">skyq/Backgrounds/infobar.png</texture>
             </control>
 
+
             <control type="label">
                 <left>0</left>
                 <top>185</top>
@@ -1570,6 +1738,16 @@
                 <shadowcolor>22000000</shadowcolor>
                 <font>font24_title</font>
                 <align>right</align>
+            </control>
+
+            <control type="image" id="6012">
+                <description>Program Character Art</description>
+                <posx>280</posx>
+                <posy>-166</posy>
+                <width>296</width>
+                <height>166</height>
+                <aspectratio align="center">keep</aspectratio>
+                <texture>-</texture>
             </control>
 
             <control type="image" id="6006">
@@ -1687,6 +1865,16 @@
                 <wrapmultiline>true</wrapmultiline>
                 <visible>false</visible>
                 <autoscroll time="3600" delay="6000" repeat="6000">true</autoscroll>
+            </control>
+
+            <control type="image" id="6013">
+                <description>Program Character Art</description>
+                <posx>1045</posx>
+                <posy>-124</posy>
+                <width>220</width>
+                <height>124</height>
+                <aspectratio align="center">keep</aspectratio>
+                <texture>-</texture>
             </control>
             <control type="image" id="6010">
                 <description>Next Program image</description>
