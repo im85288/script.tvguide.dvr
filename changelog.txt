@@ -6,6 +6,11 @@ USAGE NOTES:
 - reload all folders in settings
 - use Spoyser's repo for Super Favourites
 
+version 0.0.10
+- ratings table added
+- more data shown/scrapped such as tagline, poster etc
+- further performance tweeks
+
 version 0.0.9
 - bug fixes
 

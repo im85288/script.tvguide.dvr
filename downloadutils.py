@@ -35,7 +35,9 @@ class DownloadUtils():
     # How many 401 returns before declaring unauthorized?
     unauthorizedAttempts = 2
     omdbinfocache = {}
+    tmdbinfocache = {}
     top250 = {}
+    tmdb_apiKey = "ae06df54334aa653354e9a010f4b81cb"
 
     def __init__(self):
         self.__dict__ = self._shared_state
@@ -58,7 +60,6 @@ class DownloadUtils():
         #perform search on TMDB and return artwork
         matchFound = None
         media_id = None
-        tmdb_apiKey = "ae06df54334aa653354e9a010f4b81cb"
         KODILANGUAGE = xbmc.getLanguage(xbmc.ISO_639_1)
         # if the title has the year in remove it as tmdb cannot deal with it...
         # replace e.g. 'The Americans (2015)' with 'The Americans'
@@ -71,7 +72,7 @@ class DownloadUtils():
             return eval(cache)
 
         try:
-            url = 'http://api.themoviedb.org/3/search/%s?api_key=%s&language=%s&query=%s' %(media_type,tmdb_apiKey,KODILANGUAGE,self.tryEncode(title))
+            url = 'http://api.themoviedb.org/3/search/%s?api_key=%s&language=%s&query=%s' %(media_type,self.tmdb_apiKey,KODILANGUAGE,self.tryEncode(title))
             response = requests.get(url, timeout=5)
             if response.status_code == 200:
                 data = json.loads(response.content.decode('utf-8','replace'))
@@ -104,9 +105,9 @@ class DownloadUtils():
                     languages = [KODILANGUAGE,"en"]
                     for language in languages:
                         if media_type == "movie":
-                            url = 'http://api.themoviedb.org/3/movie/%s?api_key=%s&language=%s&append_to_response=videos' %(id,tmdb_apiKey,language)
+                            url = 'http://api.themoviedb.org/3/movie/%s?api_key=%s&language=%s&append_to_response=videos' %(id,self.tmdb_apiKey,language)
                         elif media_type == "tv":
-                            url = 'http://api.themoviedb.org/3/tv/%s?api_key=%s&append_to_response=external_ids,videos&language=%s' %(id,tmdb_apiKey,language)
+                            url = 'http://api.themoviedb.org/3/tv/%s?api_key=%s&append_to_response=external_ids,videos&language=%s' %(id,self.tmdb_apiKey,language)
                         response = requests.get(url)
                         data = json.loads(response.content.decode('utf-8','replace'))
                         if data:
@@ -127,7 +128,6 @@ class DownloadUtils():
         #perform search on TMDB and return artwork
         matchFound = None
         media_id = None
-        tmdb_apiKey = "ae06df54334aa653354e9a010f4b81cb"
         KODILANGUAGE = xbmc.getLanguage(xbmc.ISO_639_1)
         # if the title has the year in remove it as tmdb cannot deal with it...
         # replace e.g. 'The Americans (2015)' with 'The Americans'
@@ -140,7 +140,7 @@ class DownloadUtils():
             return eval(cache)
 
         try:
-            url = 'http://api.themoviedb.org/3/search/%s?api_key=%s&language=%s&query=%s' %(media_type,tmdb_apiKey,KODILANGUAGE,self.tryEncode(title))
+            url = 'http://api.themoviedb.org/3/search/%s?api_key=%s&language=%s&query=%s' %(media_type,self.tmdb_apiKey,KODILANGUAGE,self.tryEncode(title))
             response = requests.get(url, timeout=5)
             if response.status_code == 200:
                 data = json.loads(response.content.decode('utf-8','replace'))
@@ -173,9 +173,9 @@ class DownloadUtils():
                     languages = [KODILANGUAGE,"en"]
                     for language in languages:
                         if media_type == "movie":
-                            url = 'http://api.themoviedb.org/3/movie/%s?api_key=%s&language=%s&append_to_response=videos' %(id,tmdb_apiKey,language)
+                            url = 'http://api.themoviedb.org/3/movie/%s?api_key=%s&language=%s&append_to_response=videos' %(id,self.tmdb_apiKey,language)
                         elif media_type == "tv":
-                            url = 'http://api.themoviedb.org/3/tv/%s?api_key=%s&append_to_response=external_ids,videos&language=%s' %(id,tmdb_apiKey,language)
+                            url = 'http://api.themoviedb.org/3/tv/%s?api_key=%s&append_to_response=external_ids,videos&language=%s' %(id,self.tmdb_apiKey,language)
                         response = requests.get(url)
                         data = json.loads(response.content.decode('utf-8','replace'))
                         if data:
@@ -260,6 +260,35 @@ class DownloadUtils():
             if omdbresult.get("Response","") == "True":
                 result = omdbresult
                 self.omdbinfocache[mediaId] = result
+        return result
+
+    def getTmdbInfo(self, mediaId):
+        result = {}
+        if self.tmdbinfocache.get(mediaId):
+            #get data from cache
+            result = self.tmdbinfocache[mediaId]
+        else:
+            url = 'http://api.themoviedb.org/3/find/%s?external_source=imdb_id&api_key=%s' %(mediaId,self.tmdb_apiKey)
+            response = requests.get(url)
+            data = json.loads(response.content.decode('utf-8','replace'))
+            if data and data.get("movie_results"):
+                data = data.get("movie_results")
+                if len(data) == 1:
+                    url = 'http://api.themoviedb.org/3/movie/%s?api_key=%s' %(data[0].get("id"),self.tmdb_apiKey)
+                    response = requests.get(url)
+                    data = json.loads(response.content.decode('utf-8','replace'))
+                    if data.get("budget") and data.get("budget") > 0:
+                        mln = float(data.get("budget")) / 1000000
+                        mln = "%.1f" % mln
+                        result["budget"] = "$ %s mln." %mln.replace(".0","").replace(".",",")
+
+                    if data.get("revenue","") and data.get("revenue") > 0:
+                        mln = float(data.get("revenue")) / 1000000
+                        mln = "%.1f" % mln
+                        result["revenue"] = "$ %s mln." %mln.replace(".0","").replace(".",",")
+
+                    result["tagline"] = data.get("tagline","")
+                    self.tmdbinfocache[mediaId] = result
         return result
 
     def getImdbTop250(self, mediaId):

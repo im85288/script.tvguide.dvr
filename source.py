@@ -64,6 +64,37 @@ class Channel(object):
         return 'Channel(id=%s, title=%s, logo=%s, streamUrl=%s)' \
                % (self.id, self.title, self.logo, self.streamUrl)
 
+class Rating(object):
+    def __init__(self, budget, revenue, tagline, tomatometer, tomatoimage, tomatoconsensus, year,runtime,director,rated,awards,imbdrating,created):
+        """
+
+        @param channel:
+        @type channel: source.Channel
+        @param title:
+        @param startDate:
+        @param endDate:
+        @param description:
+        @param imageLarge:
+        @param imageSmall:
+        """
+        self.budget = budget
+        self.revenue = revenue
+        self.tagline = tagline
+        self.tomatometer = tomatometer
+        self.tomatoimage = tomatoimage
+        self.tomatoconsensus = tomatoconsensus
+        self.year = year
+        self.runtime = runtime
+        self.director = director
+        self.rated = rated
+        self.awards = awards
+        self.imbdrating = imbdrating
+        self.created = created
+
+    def __repr__(self):
+        return 'Rating(budget=%s, revenue=%s, tagline=%s, tomatometer=%s, tomatoimage=%s, tomatoconsensus=%s, ' \
+               'year=%s, characterart=%s)' % (self.budget, self.revenue, self.tagline, self.tomatometer, self.tomatoimage, self.tomatoconsensus,self.year, self.runtime)
+
 class Artwork(object):
     def __init__(self, clearlogo, discart, clearart, banner, poster, landscape, fanart,characterart):
         """
@@ -956,6 +987,42 @@ class Database(object):
         except:
             return
 
+    def setRatingsForId(self, omdbinfo, tmdbinfo, id):
+        if omdbinfo is not None:
+            self._invokeAndBlockForResult(self._setRatingsForId, omdbinfo, tmdbinfo, id)
+            # no result, but block until operation is
+
+    def _setRatingsForId(self, omdbinfo, tmdbinfo,id):
+        if omdbinfo is not None:
+            c = self.conn.cursor()
+            if id:
+                timestamp = datetime.datetime.today()
+                c.execute('INSERT OR REPLACE INTO rating(id, budget, revenue, tagline, tomatometer, tomatoimage, tomatoconsensus, year, runtime, director, rated, awards, imbdrating, created) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                          [id, tmdbinfo.get("budget",None), tmdbinfo.get("revenue",None), tmdbinfo.get("tagline",None), omdbinfo.get("tomatoMeter",None),
+                           omdbinfo.get("tomatoImage",None), omdbinfo.get("tomatoConsensus",None), omdbinfo.get("Year",None), omdbinfo.get("Runtime",None), omdbinfo.get("Director",None), omdbinfo.get("Rated",None), omdbinfo.get("Awards",None), omdbinfo.get("imdbRating",None),timestamp])
+            self.conn.commit()
+            c.close()
+
+    def getRatingsForId(self, id):
+        return self._invokeAndBlockForResult(self._getRatingsForId, id)
+
+    def _getRatingsForId(self, id):
+        try:
+            rating = None
+            c = self.conn.cursor()
+            c.execute(
+                'SELECT * FROM rating WHERE id=?',
+                [id])
+            row = c.fetchone()
+            if row:
+                rating = Rating(row['budget'], row['revenue'], row['tagline'],
+                                  row['tomatometer'], row['tomatoimage'], row['tomatoconsensus'], row['year'],
+                                  row['runtime'], row['director'], row['rated'], row['awards'], row['imbdrating'], row['created'])
+            c.close()
+            return rating
+        except:
+            return
+
     @staticmethod
     def adapt_datetime(ts):
         # http://docs.python.org/2/library/sqlite3.html#registering-an-adapter-callable
@@ -1037,6 +1104,11 @@ class Database(object):
                 c.execute(
                     'CREATE TABLE artwork(id TEXT PRIMARY KEY, clearlogo TEXT, discart TEXT, clearart TEXT, banner TEXT, poster TEXT, landscape TEXT, fanart TEXT, characterart TEXT)')
 
+            if version < [1, 3, 5]:
+                # Create ratings table
+                c.execute('UPDATE version SET major=1, minor=3, patch=5')
+                c.execute(
+                    'CREATE TABLE rating(id TEXT PRIMARY KEY, budget TEXT, revenue TEXT, tagline TEXT, tomatometer TEXT, tomatoimage TEXT, tomatoconsensus TEXT, year TEXT, runtime TEXT, director TEXT, rated TEXT, awards TEXT, imbdrating TEXT, created TIMESTAMP)')
             c.execute(
                 "CREATE TABLE IF NOT EXISTS autoplays(channel TEXT, program_title TEXT, source TEXT, FOREIGN KEY(channel, source) REFERENCES channels(id, source) ON DELETE CASCADE)")
 

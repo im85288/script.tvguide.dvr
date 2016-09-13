@@ -155,6 +155,7 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_IMAGE_LARGE = 7033
     C_MAIN_IMDB_RATING = 7034
     C_MAIN_IMDB250_RATING = 7035
+    C_MAIN_POSTER = 7036
     C_MAIN_TIMEBAR = 4100
     C_MAIN_TIMEBAR_HEAD = 4101
     C_MAIN_LOADING = 4200
@@ -199,6 +200,8 @@ class TVGuide(xbmcgui.WindowXML):
     C_NEXT_OSD_TIME = 6009
     C_NEXT_OSD_CHANNEL_IMAGE = 6010
     C_NEXT_OSD_CHARACTER_ART = 6013
+    C_MAIN_OSD_CLEAR_LOGO = 6014
+    C_NEXT_OSD_CLEAR_LOGO = 6015
     C_MAIN_VIDEO_BACKGROUND = 5555
     C_MAIN_VIDEO_PIP = 6666
     C_MAIN_LAST_PLAYED = 8000
@@ -954,6 +957,7 @@ class TVGuide(xbmcgui.WindowXML):
 
         self.setControlImage(self.C_MAIN_CLEARLOGO, '')
         self.setControlImage(self.C_MAIN_BANNER, '')
+        self.setControlImage(self.C_MAIN_POSTER, '')
         self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "")
         self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
         self.setControlText(self.C_MAIN_TOMATOE_CONSENSUS, '')
@@ -1012,22 +1016,70 @@ class TVGuide(xbmcgui.WindowXML):
                     self.setControlImage(self.C_MAIN_BANNER, banner)
                 else:
                     self.setControlImage(self.C_MAIN_BANNER, '')
+                poster = artwork.poster
+                if poster is not None:
+                    self.setControlImage(self.C_MAIN_POSTER, poster)
+                else:
+                    self.setControlImage(self.C_MAIN_POSTER, '')
             if imdbid and imdbid != "None":
-                omdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
 
-                if omdbinfo:
-                    tomatometer = omdbinfo.get("tomatoMeter",None)
+                databaserating = self.database.getRatingsForId(imdbid)
+                if databaserating is not None:
+                    createddate = databaserating.created
+                    today = datetime.datetime.today()
+                    expirydate = today - datetime.timedelta(days=60)
+                    if createddate and createddate < expirydate:
+                        downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                        if program.is_movie == "Movie":
+                            downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                        else:
+                            downloadedtmdbInfo = {}
+                        self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                        rating = self.database.getRatingsForId(imdbid)
+                    else:
+                        rating = databaserating
+                else:
+                    downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                    if program.is_movie == "Movie":
+                        downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                    else:
+                        downloadedtmdbInfo = {}
+                    self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                    rating = self.database.getRatingsForId(imdbid)
+
+                if rating:
+                    tomatometer = rating.tomatometer
                     if tomatometer and tomatometer != "N/A":
                         self.setControlLabel(self.C_MAIN_TOMATOE_RATING, tomatometer)
                     else:
                         self.setControlLabel(self.C_MAIN_TOMATOE_RATING, '')
-                    tomatoimage = omdbinfo.get("tomatoImage",None)
-                    tomatoconsensus = omdbinfo.get("tomatoConsensus",None)
-                    year = omdbinfo.get("Year",None)
-                    awards = omdbinfo.get("Awards",None)
-                    if tomatoconsensus and tomatoconsensus != "N/A":
+                    tomatoimage = rating.tomatoimage
+                    year = rating.year
+                    runtime = rating.runtime
+                    director = rating.director
+                    rated = rating.rated
+                    awards = rating.awards
+                    tagline = rating.tagline
+                    budget = rating.budget
+                    revenue = rating.revenue
+                    if rating.tomatoconsensus and rating.tomatoconsensus != "N/A":
+                        if tagline and tagline != "N/A":
+                            tomatoconsensus = "[I][COLOR=yellow]%s[/COLOR][/I][CR]%s" % (tagline,rating.tomatoconsensus)
+                        else:
+                            tomatoconsensus = rating.tomatoconsensus
+
                         if year and year != "N/A":
                             tomatoconsensus += " (%s)" % (year)
+                        if runtime and runtime != "N/A":
+                            tomatoconsensus += " %s" % (runtime)
+                        if rated and rated != "N/A":
+                            tomatoconsensus += " [LIGHT]- Rated [/LIGHT]%s" % (rated)
+                        if budget and budget != "N/A":
+                            tomatoconsensus += " [LIGHT]- Budget [/LIGHT]%s" % (budget)
+                        if revenue and revenue != "N/A":
+                            tomatoconsensus += " [LIGHT]- Revenue [/LIGHT]%s" % (revenue)
+                        if director and director != "N/A":
+                            tomatoconsensus += " [LIGHT]- Directed by [/LIGHT]%s" % (director)
                         if awards and awards != "N/A":
                             tomatoconsensus += "[CR][CR][I]%s[/I]" % (awards)
                         if program.is_movie == "Movie":
@@ -1044,7 +1096,7 @@ class TVGuide(xbmcgui.WindowXML):
                         else:
                             self.setControlImage(self.C_MAIN_TOMATOE_IMAGE, "splat.png")
 
-                    imdbrating = omdbinfo.get("imdbRating",None)
+                    imdbrating = rating.imbdrating
                     if imdbrating and imdbrating != "N/A":
                         self.setControlLabel(self.C_MAIN_IMDB_RATING, imdbrating)
                     else:
@@ -1410,8 +1462,11 @@ class TVGuide(xbmcgui.WindowXML):
 
         self.setControlImage(self.C_MAIN_OSD_CHARACTER_ART, '')
         self.setControlImage(self.C_NEXT_OSD_CHARACTER_ART, '')
+        self.setControlImage(self.C_MAIN_OSD_CLEAR_LOGO, '')
+        self.setControlImage(self.C_NEXT_OSD_CLEAR_LOGO, '')
         if self.osdProgram is not None:
             title = '%s' % self.osdProgram.title
+            self.setControlText(self.C_MAIN_OSD_DESCRIPTION, self.osdProgram.description)
             if self.osdProgram.is_movie == "Movie" or self.osdProgram.is_movie == "TV":
                 if self.osdProgram.is_movie == "Movie":
                     media_type = 'movie'
@@ -1452,6 +1507,52 @@ class TVGuide(xbmcgui.WindowXML):
                         if clearart is not None:
                             self.setControlImage(self.C_MAIN_OSD_CHARACTER_ART, clearart)
 
+                    clearlogo = artwork.clearlogo
+                    if clearlogo is not None:
+                        self.setControlImage(self.C_MAIN_OSD_CLEAR_LOGO, clearlogo)
+
+                if imdbid and imdbid != "None" and self.osdProgram.is_movie == "Movie":
+
+                    databaserating = self.database.getRatingsForId(imdbid)
+                    if databaserating is not None:
+                        rating = databaserating
+                    else:
+                        downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                        downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                        self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                        rating = self.database.getRatingsForId(imdbid)
+
+                    if rating:
+                        year = rating.year
+                        tagline = rating.tagline
+                        runtime = rating.runtime
+                        director = rating.director
+                        rated = rating.rated
+                        awards = rating.awards
+                        budget = rating.budget
+                        revenue = rating.revenue
+                        if rating.tomatoconsensus and rating.tomatoconsensus != "N/A":
+                            if tagline and tagline != "N/A":
+                                tomatoconsensus = "[I][COLOR=yellow]%s[/COLOR][/I][CR]%s" % (tagline,rating.tomatoconsensus)
+                            else:
+                                tomatoconsensus = rating.tomatoconsensus
+
+                            if year and year != "N/A":
+                                tomatoconsensus += " (%s)" % (year)
+                            if runtime and runtime != "N/A":
+                                tomatoconsensus += " %s" % (runtime)
+                            if rated and rated != "N/A":
+                                tomatoconsensus += " [LIGHT]- Rated [/LIGHT]%s" % (rated)
+                            if budget and budget != "N/A":
+                                tomatoconsensus += " [LIGHT]- Budget [/LIGHT]%s" % (budget)
+                            if revenue and revenue != "N/A":
+                                tomatoconsensus += " [LIGHT]- Revenue [/LIGHT]%s" % (revenue)
+                            if director and director != "N/A":
+                                tomatoconsensus += " [LIGHT]- Directed by [/LIGHT]%s" % (director)
+                            if awards and awards != "N/A":
+                                tomatoconsensus += "[CR][CR][I]%s[/I]" % (awards)
+                            self.setControlText(self.C_MAIN_OSD_DESCRIPTION, tomatoconsensus)
+
             if self.osdProgram.season is not None and self.osdProgram.episode is not None:
                 if int(self.osdProgram.season) < 10 and len(str(self.osdProgram.season)) == 1:
                     self.osdProgram.season = "0" + self.osdProgram.season
@@ -1468,7 +1569,6 @@ class TVGuide(xbmcgui.WindowXML):
                 osdprogramprogresscontrol = self.getControl(self.C_MAIN_OSD_PROGRESS)
                 if osdprogramprogresscontrol:
                     osdprogramprogresscontrol.setPercent(self.percent(self.osdProgram.startDate,self.osdProgram.endDate))
-            self.setControlText(self.C_MAIN_OSD_DESCRIPTION, self.osdProgram.description)
             self.setControlLabel(self.C_MAIN_OSD_CHANNEL_TITLE, self.osdChannel.title)
             if self.osdProgram.channel.logo is not None:
                 self.setControlImage(self.C_MAIN_OSD_CHANNEL_LOGO, self.osdProgram.channel.logo)
@@ -1520,6 +1620,34 @@ class TVGuide(xbmcgui.WindowXML):
                             clearart = artwork.clearart
                             if clearart is not None:
                                 self.setControlImage(self.C_NEXT_OSD_CHARACTER_ART, clearart)
+                        clearlogo = artwork.clearlogo
+                        if clearlogo is not None:
+                            self.setControlImage(self.C_NEXT_OSD_CLEAR_LOGO, clearlogo)
+
+                    if imdbid and imdbid != "None" and nextOsdProgram.is_movie == "Movie":
+
+                        databaserating = self.database.getRatingsForId(imdbid)
+                        if databaserating is not None:
+                            rating = databaserating
+                        else:
+                            downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                            downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                            self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                            rating = self.database.getRatingsForId(imdbid)
+
+                        if rating:
+                            year = rating.year
+                            tagline = rating.tagline
+                            if rating.tomatoconsensus and rating.tomatoconsensus != "N/A":
+                                if tagline and tagline != "N/A":
+                                    tomatoconsensus = "[I][COLOR=yellow]%s[/COLOR][/I][CR]%s" % (tagline,rating.tomatoconsensus)
+                                else:
+                                    tomatoconsensus = rating.tomatoconsensus
+
+                                if year and year != "N/A":
+                                    tomatoconsensus += " (%s)" % (year)
+                                self.setControlText(self.C_NEXT_OSD_DESCRIPTION, tomatoconsensus)
+
                 if nextOsdProgram.season is not None and nextOsdProgram.episode is not None:
                     if int(nextOsdProgram.season) < 10 and len(str(nextOsdProgram.season)) == 1:
                         nextOsdProgram.season = "0" + nextOsdProgram.season
