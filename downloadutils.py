@@ -7,6 +7,7 @@ import requests
 import re
 import xbmc, xbmcvfs, xbmcgui
 import BeautifulSoup
+import urllib2
 try:
     import simplejson as json
 except:
@@ -55,6 +56,16 @@ class DownloadUtils():
             return text.decode(encoding,"ignore")
         except:
             return text
+
+    def checkIconExists(self, icon):
+        try:
+            ret = urllib2.urlopen(icon)
+            if ret.code == 200:
+                return True
+            else:
+                return False
+        except urllib2.URLError, e:
+            return False
 
     def getExternalId(self,title,media_type):
         #perform search on TMDB and return artwork
@@ -290,6 +301,63 @@ class DownloadUtils():
                     result["tagline"] = data.get("tagline","")
                     self.tmdbinfocache[mediaId] = result
         return result
+
+    def getChannelLogo(self,channelname):
+        image = ""
+        cache = WINDOW.getProperty(channelname.encode('utf-8') + "script.tvguide.dvr.channellogo")
+        checked = WINDOW.getProperty(channelname.encode('utf-8') + "script.tvguide.dvr.channellogo.checked")
+        if cache:
+            return cache
+        elif checked:
+            return image
+        else:
+            try:
+
+                #lookup with thelogodb
+                if not image:
+                    url = 'http://www.thelogodb.com/api/json/v1/3241/tvchannel.php?s=%s' %self.tryEncode(channelname)
+                    response = requests.get(url)
+                    if response.content:
+                        data = json.loads(response.content.decode('utf-8','replace'))
+                        xbmc.log("fetch channel json response %s" %data)
+                        if data and data.has_key('channels'):
+                            results = data['channels']
+                            if results:
+                                for i in results:
+                                    rest = i['strLogoWide']
+                                    if rest:
+                                        if ".jpg" in rest or ".png" in rest:
+                                            image = rest
+                                            break
+
+                if not image:
+                    search_alt = channelname.replace(" HD","")
+                    url = 'http://www.thelogodb.com/api/json/v1/3241/tvchannel.php?s=%s' %self.tryEncode(search_alt)
+                    response = requests.get(url)
+                    if response.content:
+                        data = json.loads(response.content.decode('utf-8','replace'))
+                        xbmc.log("fetch channel json response 2 %s" %data)
+                        if data and data.has_key('channels'):
+                            results = data['channels']
+                            if results:
+                                for i in results:
+                                    rest = i['strLogoWide']
+                                    if rest:
+                                        if ".jpg" in rest or ".png" in rest:
+                                            image = rest
+                                            break
+            except Exception as e:
+                    xbmc.log("ERROR in searchChannelLogo ! --> " + str(e))
+
+            if image:
+                if ".jpg/" in image:
+                    image = image.split(".jpg/")[0] + ".jpg"
+
+            WINDOW.setProperty(channelname.encode('utf-8') + "script.tvguide.dvr.channellogo",image)
+            WINDOW.setProperty(channelname.encode('utf-8') + "script.tvguide.dvr.channellogo.checked",'true')
+
+            xbmc.log("fetch channel retrieved from channel logo db %s" %image)
+            return image
 
     def getImdbTop250(self, mediaId):
         result = {}

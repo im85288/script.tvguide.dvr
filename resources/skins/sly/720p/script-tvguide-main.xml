@@ -1259,12 +1259,24 @@
                 <font>font13</font>
                 <align>left</align>
                 <aligny>top</aligny>
-                <visible>StringCompare(Control.GetLabel(7024),)</visible>
+                <visible>StringCompare(Control.GetLabel(7024),) + StringCompare(Control.GetLabel(7029),)</visible>
                 <visible>!Control.IsVisible(5000)</visible>
             </control>
 
             <control type="image" id="7024">
                 <description>Channel logo</description>
+                <posx>360</posx>
+                <posy>10</posy>
+                <width>160</width>
+                <height>30</height>
+                <align>left</align>
+                <aspectratio align="left">keep</aspectratio>
+                <fadetime>500</fadetime>
+                <visible>!Control.IsVisible(5000) + StringCompare(Control.GetLabel(7029),)</visible>
+            </control>
+
+            <control type="image" id="7029">
+                <description>Alternate Channel logo</description>
                 <posx>360</posx>
                 <posy>10</posy>
                 <width>160</width>

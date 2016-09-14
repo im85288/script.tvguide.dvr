@@ -145,6 +145,7 @@ class TVGuide(xbmcgui.WindowXML):
     C_MAIN_DESCRIPTION = 7022
     C_MAIN_IMAGE = 7023
     C_MAIN_LOGO = 7024
+    C_MAIN_ALTERNATE_LOGO = 7029
     C_MAIN_CHANNEL = 7025
     C_MAIN_PROGRESS = 7026
     C_MAIN_CLEARLOGO = 7027
@@ -1167,6 +1168,21 @@ class TVGuide(xbmcgui.WindowXML):
             else:
                 self.setControlImage(self.C_MAIN_LOGO, '')
 
+            alternate_channel_logo = self.database.getChannelLogo(program.channel)
+            if not alternate_channel_logo:
+                channellogo = downloadutils.DownloadUtils().getChannelLogo(program.channel.title)
+                if channellogo:
+                    self.setControlImage(self.C_MAIN_ALTERNATE_LOGO, channellogo)
+                    self.database.setChannelLogo(program.channel,channellogo)
+                else:
+                    self.setControlImage(self.C_MAIN_ALTERNATE_LOGO, '')
+            else:
+                self.setControlImage(self.C_MAIN_ALTERNATE_LOGO, alternate_channel_logo)
+                if not program.channel.logo:
+                    self.database.setMainChannelLogo(program.channel,alternate_channel_logo)
+                elif not downloadutils.DownloadUtils().checkIconExists(program.channel.logo):
+                    xbmc.log("overwrite channel logo for channel %s" %program.channel.title)
+                    self.database.setMainChannelLogo(program.channel,alternate_channel_logo)
 
             if program.imageSmall is not None:
                 self.setControlImage(self.C_MAIN_IMAGE, program.imageSmall)
@@ -1820,6 +1836,7 @@ class TVGuide(xbmcgui.WindowXML):
                     self.setControlImage(4110 + idx, channel.logo)
                 else:
                     self.setControlImage(4110 + idx, ' ')
+
             control = self.getControl(4010 + idx)
             height = self.epgView.cellHeight
             top = self.epgView.cellHeight * idx

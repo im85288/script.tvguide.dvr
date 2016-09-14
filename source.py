@@ -1023,6 +1023,65 @@ class Database(object):
         except:
             return
 
+    def setChannelLogo(self, channel,logo):
+        return self._invokeAndBlockForResult(self._setChannelLogo, channel, logo)
+
+    def _setChannelLogo(self, channel,logo):
+        if not channel and not logo:
+            return
+        c = self.conn.cursor()
+        c.execute('INSERT OR REPLACE INTO logo(id, logo) VALUES(?, ?)',[channel.id, logo])
+        self.conn.commit()
+        c.close()
+
+    def getChannelLogo(self, channel):
+        return self._invokeAndBlockForResult(self._getChannelLogo, channel)
+
+    def _getChannelLogo(self, channel):
+        try:
+            logo = None
+            c = self.conn.cursor()
+            c.execute(
+                'SELECT * FROM logo WHERE id=?',
+                [channel.id])
+            row = c.fetchone()
+            if row:
+                logo = row['logo']
+            c.close()
+            return logo
+        except:
+            return
+
+    def getMainChannelLogo(self, channel):
+        return self._invokeAndBlockForResult(self._getMainChannelLogo, channel)
+
+    def _getMainChannelLogo(self, channel):
+        try:
+            logo = None
+            c = self.conn.cursor()
+            c.execute(
+                'SELECT * FROM channels WHERE id=?',
+                [channel.id])
+            row = c.fetchone()
+            if row:
+                logo = row['logo']
+            c.close()
+            return logo
+        except:
+            return
+
+    def setMainChannelLogo(self, channel,logo):
+        return self._invokeAndBlockForResult(self._setMainChannelLogo, channel, logo)
+
+    def _setMainChannelLogo(self, channel,logo):
+        if not channel and not logo:
+            return
+        c = self.conn.cursor()
+        c.execute('UPDATE OR REPLACE channels SET logo=? WHERE id=?' , (logo, channel.id))
+        self.conn.commit()
+        c.close()
+
+
     @staticmethod
     def adapt_datetime(ts):
         # http://docs.python.org/2/library/sqlite3.html#registering-an-adapter-callable
@@ -1098,6 +1157,7 @@ class Database(object):
                 c.execute('CREATE INDEX program_list_idx ON programs(source, channel, start_date, end_date)')
                 c.execute('CREATE INDEX start_date_idx ON programs(start_date)')
                 c.execute('CREATE INDEX end_date_idx ON programs(end_date)')
+
             if version < [1, 3, 4]:
                 # Create artwork table
                 c.execute('UPDATE version SET major=1, minor=3, patch=4')
@@ -1105,10 +1165,17 @@ class Database(object):
                     'CREATE TABLE artwork(id TEXT PRIMARY KEY, clearlogo TEXT, discart TEXT, clearart TEXT, banner TEXT, poster TEXT, landscape TEXT, fanart TEXT, characterart TEXT)')
 
             if version < [1, 3, 5]:
-                # Create ratings table
+                # Create rating table
                 c.execute('UPDATE version SET major=1, minor=3, patch=5')
                 c.execute(
                     'CREATE TABLE rating(id TEXT PRIMARY KEY, budget TEXT, revenue TEXT, tagline TEXT, tomatometer TEXT, tomatoimage TEXT, tomatoconsensus TEXT, year TEXT, runtime TEXT, director TEXT, rated TEXT, awards TEXT, imbdrating TEXT, created TIMESTAMP)')
+
+            if version < [1, 3, 6]:
+                # Create logo table
+                c.execute('UPDATE version SET major=1, minor=3, patch=6')
+                c.execute(
+                    'CREATE TABLE logo(id TEXT PRIMARY KEY, logo TEXT)')
+
             c.execute(
                 "CREATE TABLE IF NOT EXISTS autoplays(channel TEXT, program_title TEXT, source TEXT, FOREIGN KEY(channel, source) REFERENCES channels(id, source) ON DELETE CASCADE)")
 
