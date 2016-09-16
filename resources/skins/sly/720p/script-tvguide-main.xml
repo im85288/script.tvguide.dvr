@@ -361,6 +361,16 @@
                     <textcolor>55ffffff</textcolor>
                     <label>$LOCALIZE[12316]-AutoPlays</label>
                 </control>
+                <control type="label">
+                    <width>auto</width>
+                    <height>20</height>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <font>font10_title</font>
+                    <textcolor>55ffffff</textcolor>
+                    <label>$LOCALIZE[12317]-IPlayer</label>
+                    <visible>System.HasAddon(plugin.video.iplayerwww)</visible>
+                </control>
             </control>
 
             <!-- Date and time row -->
@@ -2882,6 +2892,2337 @@
                 <wrapmultiline>true</wrapmultiline>
             </control>
 
+        </control>
+
+        <control type="label" id="15000">
+            <description>visibility marker for Iplayer group</description>
+        </control>
+        <control type="group">
+            <description>Iplayer group</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1280</width>
+            <height>720</height>
+            <visible>!Control.IsVisible(15000)</visible>
+            <visible>System.HasAddon(plugin.video.iplayerwww)</visible>
+            <animation time="200" effect="fade">Visible</animation>
+            <animation time="200" effect="fade">Hidden</animation>
+
+            <control type="image">
+                <description>background</description>
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>1280</width>
+                <height>720</height>
+                <texture colordiffuse="FF333333">grey.png</texture>
+            </control>
+
+            <control type="image">
+                <description>background</description>
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>1280</width>
+                <height>70</height>
+                <texture colordiffuse="FFCCCCCC">white.png</texture>
+            </control>
+            <control type="label">
+                <description>Displays todays date</description>
+                <posx>10r</posx>
+                <posy>5</posy>
+                <width>280</width>
+                <height>20</height>
+                <textcolor>bb000000</textcolor>
+                <shadowcolor>FFCCCCCC</shadowcolor>
+                <font>font13</font>
+                <align>right</align>
+                <aligny>center</aligny>
+                <visible>true</visible>
+                <label>$INFO[System.Date(DDD)], $INFO[System.Date(dd)] $INFO[System.Date(MMM)]</label>
+            </control>
+            <control type="label">
+                <description>time label</description>
+                <posx>10r</posx>
+                <top>22</top>
+                <width>200</width>
+                <height>40</height>
+                <align>right</align>
+                <aligny>bottom</aligny>
+                <font>font35_title</font>
+                <textcolor>bb000000</textcolor>
+                <shadowcolor>FFCCCCCC</shadowcolor>
+                <label>$INFO[System.Time(hh:mm)]</label>
+            </control>
+            <control type="image">
+                <description>logo</description>
+                <posx>0</posx>
+                <posy>7</posy>
+                <width>1280</width>
+                <height>60</height>
+                <aspectratio align="center">keep</aspectratio>
+                <texture>iplayerlogo.png</texture>
+            </control>
+            <control type="radiobutton" id="15100">
+                <posx>-1</posx>
+                <posy>-3</posy>
+                <width>260</width>
+                <height>60</height>
+                <align>left</align>
+                <aligny>top</aligny>
+                <font>font12</font>
+                <ondown condition="Control.IsVisible(15200)">15005</ondown>
+                <ondown condition="!Control.IsVisible(15200)">15001</ondown>
+
+                <label>[CR]Search BBC iPlayer</label>
+                <textcolor>ddcccccc</textcolor>
+                <textoffsety>6</textoffsety>
+                <texturefocus border="40" colordiffuse="FF00ff48">button-fo.png</texturefocus>
+                <texturenofocus border="40">button-nofo.png</texturenofocus>
+                <radioposx>198</radioposx>
+                <radioposy>19</radioposy>
+                <radiowidth>40</radiowidth>
+                <radioheight>40</radioheight>
+                <textureradioonfocus colordiffuse="FF000000">search.png</textureradioonfocus>
+                <textureradioonnofocus colordiffuse="FFCCCCCC">search.png</textureradioonnofocus>
+                <textureradioofffocus colordiffuse="FF000000">search.png</textureradioofffocus>
+                <textureradiooffnofocus colordiffuse="FFCCCCCC">search.png</textureradiooffnofocus>
+            </control>
+
+            <control type="label" id="15101">
+                <description>search text label</description>
+                <posx>-1000</posx>
+                <top>-100</top>
+                <width>1</width>
+                <height>1</height>
+            </control>
+
+            <control type="label" id="15102">
+                <description>search display text label</description>
+                <posx>-1000</posx>
+                <top>-100</top>
+                <width>1</width>
+                <height>1</height>
+            </control>
+            <control type="wraplist" id="89899">
+                <description>Search</description>
+                <posx>-1000</posx>
+                <posy>-200</posy>
+                <height>1</height>
+                <width>1</width>
+                <preloaditems>2</preloaditems>
+                <orientation>horizontal</orientation>
+                <scrolltime tween="quadratic">100</scrolltime>
+                <itemlayout width="1" height="1">
+                </itemlayout>
+                <focusedlayout width="1" height="1">
+                </focusedlayout>
+                <content limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=%2fstorage%2f.kodi%2faddons%2fplugin.video.iplayerwww%2fmedia%2fsearch.png&amp;logged_in=False&amp;mode=104&amp;name=iPlayer%3a%20Search&amp;subtitles_url&amp;url=url&amp;keyword=$ESCINFO[Control.GetLabel(15101)]</content>
+            </control>
+            <control type="grouplist">
+                <orientation>vertical</orientation>
+                <height>645</height>
+                <posx>0</posx>
+                <posy>75</posy>
+                <scrolltime tween="cubic" easing="out">500</scrolltime>
+                <control type="group" id="15200">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <visible>IntegerGreaterThan(Container(89899).NumItems,0)</visible>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ffff008e</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Control.GetLabel(15102),, - ]$INFO[Container(15005).ListItem.Label,[COLOR=ddcccccc],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15005)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ffff008e</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Control.GetLabel(15102)]</label>
+                        <visible>!Control.HasFocus(15005)</visible>
+                    </control>
+                    <control type="wraplist" id="15005">
+                        <description>Search</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15100</onup>
+                        <ondown>15001</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15005)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <height>61</height>
+                                <aligny>center</aligny>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15005)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15005)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15005)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=%2fstorage%2f.kodi%2faddons%2fplugin.video.iplayerwww%2fmedia%2fsearch.png&amp;logged_in=False&amp;mode=104&amp;name=iPlayer%3a%20Search&amp;subtitles_url&amp;url=url&amp;keyword=$ESCINFO[Control.GetLabel(15101)]</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>15</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ffff008e</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15001).ListItem.Label,Today's most popular - [COLOR=ddcccccc],[/COLOR]]</label>
+                        <visible>!Control.IsVisible(15200) + Control.HasFocus(15001)</visible>
+                    </control>
+                    <control type="label">
+                        <left>15</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ffff008e</textcolor>
+                        <font>font13_title</font>
+                        <label>Today's most popular</label>
+                        <visible>!Control.IsVisible(15200) + !Control.HasFocus(15001)</visible>
+                    </control>
+                    <control type="label">
+                        <left>15</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15001).ListItem.Label,Today's most popular - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.IsVisible(15200) + Control.HasFocus(15001)</visible>
+                    </control>
+                    <control type="label">
+                        <left>15</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Today's most popular</label>
+                        <visible>Control.IsVisible(15200) + !Control.HasFocus(15001)</visible>
+                    </control>
+                    <control type="wraplist" id="15001">
+                        <description>Popular</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onup condition="Control.IsVisible(15200)">15005</onup>
+                        <onup condition="!Control.IsVisible(15200)">15100</onup>
+                        <ondown>15002</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15001)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15001)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15001)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15001)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=105&amp;name=Most%20Popular&amp;subtitles_url&amp;url=url</content>
+                    </control>
+                </control>
+
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Science and Nature</label>
+                        <visible>!Control.HasFocus(15002)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15002).ListItem.Label,Science and Nature - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15002)</visible>
+                    </control>
+                    <control type="wraplist" id="15002">
+                        <description>Science and Nature</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15001</onup>
+                        <ondown>15003</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15002)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15002)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15002)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15002)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Science%20%26%20Nature&amp;subtitles_url&amp;url=science-and-nature</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Entertainment</label>
+                        <visible>!Control.HasFocus(15003)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15003).ListItem.Label,Entertainment - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15003)</visible>
+                    </control>
+                    <control type="wraplist" id="15003">
+                        <description>Entertainment</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15002</onup>
+                        <ondown>15004</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15003)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15003)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15003)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15003)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Entertainment&amp;subtitles_url&amp;url=entertainment</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Sport</label>
+                        <visible>!Control.HasFocus(15004)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15004).ListItem.Label,Sport - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15004)</visible>
+                    </control>
+                    <control type="wraplist" id="15004">
+                        <description>Sport</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15003</onup>
+                        <ondown>15006</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15004)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15004)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15004)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15004)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Sport&amp;subtitles_url&amp;url=sport</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Highlights</label>
+                        <visible>!Control.HasFocus(15006)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15006).ListItem.Label,Highlights - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15006)</visible>
+                    </control>
+                    <control type="wraplist" id="15006">
+                        <description>Highlights</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15004</onup>
+                        <ondown>15007</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15006)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15006)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15006)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15006)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=106&amp;name=iPlayer%3a%20Highlights&amp;subtitles_url&amp;url=iplayer</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Comedy</label>
+                        <visible>!Control.HasFocus(15007)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15007).ListItem.Label,Comedy - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15007)</visible>
+                    </control>
+                    <control type="wraplist" id="15007">
+                        <description>Comedy</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15006</onup>
+                        <ondown>15008</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15007)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15007)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15007)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15007)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=126&amp;name=All&amp;subtitles_url&amp;url=comedy</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Documentaries</label>
+                        <visible>!Control.HasFocus(15008)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15008).ListItem.Label,Documentaries - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15008)</visible>
+                    </control>
+                    <control type="wraplist" id="15008">
+                        <description>Documentaries</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15007</onup>
+                        <ondown>15009</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15008)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15008)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15008)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15008)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=126&amp;name=All&amp;subtitles_url&amp;url=documentaries</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Drama/Soaps</label>
+                        <visible>!Control.HasFocus(15009)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15009).ListItem.Label,Drama/Soaps - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15009)</visible>
+                    </control>
+                    <control type="wraplist" id="15009">
+                        <description>Drama/Soaps</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15008</onup>
+                        <ondown>15010</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15009)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15009)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15009)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15009)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=126&amp;name=All&amp;subtitles_url&amp;url=drama-and-soaps</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Films</label>
+                        <visible>!Control.HasFocus(15010)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15010).ListItem.Label,Films - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15010)</visible>
+                    </control>
+                    <control type="wraplist" id="15010">
+                        <description>Films</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15009</onup>
+                        <ondown>15011</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15010)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15010)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15010)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15010)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Films&amp;subtitles_url&amp;url=films</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Food</label>
+                        <visible>!Control.HasFocus(15011)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15011).ListItem.Label,Food - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15011)</visible>
+                    </control>
+                    <control type="wraplist" id="15011">
+                        <description>Food</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15010</onup>
+                        <ondown>15012</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15011)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15011)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15011)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15011)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Food&amp;subtitles_url&amp;url=food</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>History</label>
+                        <visible>!Control.HasFocus(15012)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15012).ListItem.Label,History - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15012)</visible>
+                    </control>
+                    <control type="wraplist" id="15012">
+                        <description>History</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15011</onup>
+                        <ondown>15013</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15012)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15012)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15012)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15012)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=History&amp;subtitles_url&amp;url=history</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Lifestyle</label>
+                        <visible>!Control.HasFocus(15013)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15013).ListItem.Label,Lifestyle - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15013)</visible>
+                    </control>
+                    <control type="wraplist" id="15013">
+                        <description>Lifestyle</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15012</onup>
+                        <ondown>15014</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15013)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15013)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15013)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15013)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Lifestyle&amp;subtitles_url&amp;url=lifestyle</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>News</label>
+                        <visible>!Control.HasFocus(15014)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15014).ListItem.Label,News - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15014)</visible>
+                    </control>
+                    <control type="wraplist" id="15014">
+                        <description>News</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15013</onup>
+                        <ondown>15015</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15014)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15014)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15014)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15014)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=News&amp;subtitles_url&amp;url=news</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>Music</label>
+                        <visible>!Control.HasFocus(15015)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(15015).ListItem.Label,Music - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(15015)</visible>
+                    </control>
+                    <control type="wraplist" id="15015">
+                        <description>Music</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>15014</onup>
+                        <ondown condition="Control.IsVisible(15200)">15005</ondown>
+                        <ondown condition="!Control.IsVisible(15200)">15001</ondown>
+
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(15015)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(landscape)]</texture>
+                                <visible>!IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>220</height>
+                                <aspectratio aligny="top">keep</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Icon]</texture>
+                                <visible>IsEmpty(ListItem.Art(landscape))</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                                <visible>!Control.HasFocus(15015)</visible>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>$INFO[ListItem.Plot]</label>
+                                <font>font12_title</font>
+                                <textcolor>88ffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <visible>Control.HasFocus(15015)</visible>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(15015)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content sortby="playcount" sortorder="descending" limit="30" target="">plugin://plugin.video.iplayerwww/?description&amp;iconimage=DefaultFolder.png&amp;logged_in=False&amp;mode=125&amp;name=Music&amp;subtitles_url&amp;url=music</content>
+                    </control>
+                </control>
+            </control>
         </control>
 
     </controls>

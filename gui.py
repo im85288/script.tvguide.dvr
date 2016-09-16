@@ -33,6 +33,7 @@ import urllib
 import xbmc
 import xbmcgui
 import xbmcvfs
+import requests
 
 import source as src
 from notification import Notification
@@ -50,6 +51,7 @@ MODE_QUICK_EPG = 'QUICKEPG'
 MODE_TV = 'TV'
 MODE_OSD = 'OSD'
 MODE_LASTCHANNEL = 'LASTCHANNEL'
+MODE_IPLAYER = 'IPLAYER'
 
 ACTION_LEFT = 1
 ACTION_RIGHT = 2
@@ -231,6 +233,13 @@ class TVGuide(xbmcgui.WindowXML):
     C_NEXT_UP_NEXT_CHANNEL_IMAGE = 9010
     C_MAIN_UP_NEXT_TIME_REMAINING = 9012
 
+    C_IPLAYER = 15000
+    C_IPLAYER_POPULAR = 15001
+    C_IPLAYER_SEARCH = 15100
+    C_IPLAYER_SEARCH_TEXT = 15101
+    C_IPLAYER_SEARCH_DISPLAY_TEXT = 15102
+    C_IPLAYER_SEARCH_VISIBLE = 15200
+
     def __new__(cls):
         return super(TVGuide, cls).__new__(cls, 'script-tvguide-main.xml', ADDON.getAddonInfo('path'), SKIN)
 
@@ -329,6 +338,7 @@ class TVGuide(xbmcgui.WindowXML):
         self._hideControl(self.C_MAIN_LAST_PLAYED)
         self._hideControl(self.C_UP_NEXT)
         self._hideControl(self.C_QUICK_EPG)
+        self._hideControl(self.C_IPLAYER)
         self._showControl(self.C_MAIN_EPG, self.C_MAIN_LOADING)
         self.setControlLabel(self.C_MAIN_LOADING_TIME_LEFT, strings(BACKGROUND_UPDATE_IN_PROGRESS))
         self.setFocusId(self.C_MAIN_LOADING_CANCEL)
@@ -370,6 +380,74 @@ class TVGuide(xbmcgui.WindowXML):
 
         self.updateTimebar()
 
+    def createListItem(self, item):
+        liz = xbmcgui.ListItem(label=item.get("label",""),label2=item.get("label2",""))
+        liz.setProperty('IsPlayable', item.get('IsPlayable','true'))
+        liz.setPath(item.get('file'))
+
+        nodetype = "Video"
+        if item.get("type","") in ["song","album","artist"]:
+            nodetype = "Music"
+
+        #extra properties
+        for key, value in item.get("extraproperties",{}).iteritems():
+            liz.setProperty(key, value)
+
+        #video infolabels
+        if nodetype == "Video":
+            infolabels = {
+                "title": item.get("title"),
+                "size": item.get("size"),
+                "genre": item.get("genre"),
+                "year": item.get("year"),
+                "top250": item.get("top250"),
+                "rating": item.get("rating"),
+                "playcount": item.get("playcount"),
+                "overlay": item.get("overlay"),
+                "director": item.get("director"),
+                "mpaa": item.get("mpaa"),
+                "plot": item.get("plot"),
+                "plotoutline": item.get("plotoutline"),
+                "originaltitle": item.get("originaltitle"),
+                "sorttitle": item.get("sorttitle"),
+                "duration": item.get("duration"),
+                "studio": item.get("studio"),
+                "tagline": item.get("tagline"),
+                "writer": item.get("writer"),
+                "tvshowtitle": item.get("tvshowtitle"),
+                "premiered": item.get("premiered"),
+                "status": item.get("status"),
+                "code": item.get("imdbnumber"),
+                "aired": item.get("aired"),
+                "credits": item.get("credits"),
+                "votes": item.get("votes"),
+                "trailer": item.get("trailer"),
+                "progress": item.get('progresspercentage')
+            }
+            if item.get("date"): infolabels["date"] = item.get("date")
+            if item.get("lastplayed"): infolabels["lastplayed"] = item.get("lastplayed")
+            if item.get("dateadded"): infolabels["dateadded"] = item.get("dateadded")
+            if item.get("type") == "episode":
+                infolabels["season"] = item.get("season")
+                infolabels["episode"] = item.get("episode")
+
+            liz.setInfo( type="Video", infoLabels=infolabels)
+            #streamdetails
+            if item.get("streamdetails"):
+                liz.addStreamInfo("video", item["streamdetails"].get("video",{}))
+                liz.addStreamInfo("audio", item["streamdetails"].get("audio",{}))
+                liz.addStreamInfo("subtitle", item["streamdetails"].get("subtitle",{}))
+
+            #artwork
+            if item.get("art"):
+                liz.setArt( item.get("art"))
+            if item.get("icon"):
+                liz.setIconImage(item.get('icon'))
+            if item.get("thumbnail"):
+                liz.setThumbnailImage(item.get('thumbnail'))
+
+        return liz
+
     def onAction(self, action):
         debug('Mode is: %s' % self.mode)
 
@@ -379,6 +457,7 @@ class TVGuide(xbmcgui.WindowXML):
             self.tryingToPlay = False
             self._hideOsdOnly()
             self._hideQuickEpg()
+            self._hideIPlayer()
 
             self.currentChannel = None
             self.viewStartDate = datetime.datetime.today()
@@ -396,6 +475,19 @@ class TVGuide(xbmcgui.WindowXML):
             self.showFullReminders()
         elif action.getId() in [REMOTE_6, ACTION_JUMP_SMS6]:
             self.showFullAutoplays()
+        elif action.getId() in [REMOTE_7, ACTION_JUMP_SMS7] and xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
+            self._hideEpg()
+            self.mode = MODE_IPLAYER
+            control = self.getControl(self.C_IPLAYER_POPULAR)
+            self._showControl(self.C_IPLAYER)
+            #path = 'plugin://plugin.video.iplayerwww/?description&logged_in=False&mode=125&name=Entertainment&subtitles_url&url=entertainment'
+            #response = RPC.files.get_directory(media="files", directory=path, properties=["thumbnail"])
+            #for item in response.get('files'):
+            #if item.get("filetype") == 'file':
+            #liz = self.createListItem(item)
+            #control.addItem(liz)
+
+            super(TVGuide, self).setFocus(control)
 
         if self.mode == MODE_TV:
             self.onActionTVMode(action)
@@ -407,6 +499,8 @@ class TVGuide(xbmcgui.WindowXML):
             self.onActionQuickEPGMode(action)
         elif self.mode == MODE_LASTCHANNEL:
             self.onActionLastPlayedMode(action)
+        elif self.mode == MODE_IPLAYER:
+            self.onActionIPlayerMode(action)
 
     def onActionTVMode(self, action):
         if action.getId() == ACTION_PAGE_UP:
@@ -439,7 +533,12 @@ class TVGuide(xbmcgui.WindowXML):
             self.quickViewStartDate -= datetime.timedelta(minutes=self.quickViewStartDate.minute % 60, seconds=self.quickViewStartDate.second)
             self.currentProgram = self.database.getCurrentProgram(self.currentChannel)
             self.onRedrawQuickEPG(self.quickChannelIdx, self.quickViewStartDate)
-        elif action.getId() == ACTION_DOWN:
+        elif action.getId() == ACTION_DOWN and xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
+            self.mode = MODE_IPLAYER
+            control = self.getControl(self.C_IPLAYER_POPULAR)
+            self._showControl(self.C_IPLAYER)
+            super(TVGuide, self).setFocus(control)
+        elif action.getId() == ACTION_DOWN and not xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
             self.quickViewStartDate = datetime.datetime.today()
             self.quickViewStartDate -= datetime.timedelta(minutes=self.quickViewStartDate.minute % 60, seconds=self.quickViewStartDate.second)
             self.currentProgram = self.database.getCurrentProgram(self.currentChannel)
@@ -667,7 +766,33 @@ class TVGuide(xbmcgui.WindowXML):
         else:
             xbmc.log('[script.tvguide.dvr] quick epg Unhandled ActionId: ' + str(action.getId()), xbmc.LOGDEBUG)
 
+    def onActionIPlayerMode(self, action):
+        if action.getId() in [ACTION_PARENT_DIR, KEY_NAV_BACK]:
+            self._hideIPlayer()
+
+        # catch the ESC key
+        elif action.getId() == ACTION_PREVIOUS_MENU and action.getButtonCode() == KEY_ESC:
+            self._hideIPlayer()
+
+        elif action.getId() == ACTION_SELECT_ITEM:
+            # must be playable item
+            xbmc.log("onActionIPlayerMode called")
+            if xbmc.getCondVisibility("Control.HasFocus(15100)"):
+                control = self.getControl(self.C_IPLAYER_POPULAR)
+                super(TVGuide, self).setFocus(control)
+                return
+            elif self.player.isPlaying:
+                xbmc.log("onActionIPlayerMode called playing so closing")
+                self._hideIPlayer()
+            control = self.getControl(self.C_IPLAYER_POPULAR)
+            item = control.getSelectedItem()
+            # self.playIPlayerChannel(item)
+
+        else:
+            xbmc.log('[script.tvguide.dvr] iplayer Unhandled ActionId: ' + str(action.getId()), xbmc.LOGDEBUG)
+
     def onClick(self, controlId):
+        xbmc.log("onClick called for control %s" %controlId)
         if controlId in [self.C_MAIN_LOADING_CANCEL, self.C_MAIN_MOUSE_EXIT]:
             self.close()
             return
@@ -693,6 +818,16 @@ class TVGuide(xbmcgui.WindowXML):
         elif controlId == self.C_MAIN_MOUSE_RIGHT:
             self.viewStartDate += datetime.timedelta(hours=2)
             self.onRedrawEPG(self.channelIdx, self.viewStartDate)
+            return
+        elif controlId == self.C_IPLAYER_SEARCH:
+            keyboard = xbmc.Keyboard('', 'Search iPlayer')
+            keyboard.doModal()
+            if keyboard.isConfirmed():
+                search_entered = keyboard.getText() .replace(' ', '%20')  # sometimes you need to replace spaces with + or %20
+                self.setControlLabel(self.C_IPLAYER_SEARCH_TEXT, '%s' % search_entered)
+                self.setControlLabel(self.C_IPLAYER_SEARCH_DISPLAY_TEXT, '[CAPITALIZE]%s[/CAPITALIZE]' % keyboard.getText())
+                control = self.getControl(self.C_IPLAYER_SEARCH_VISIBLE)
+                control.setVisible(True)
             return
 
         program = self._getProgramFromControl(self.getControl(controlId))
@@ -1382,6 +1517,28 @@ class TVGuide(xbmcgui.WindowXML):
 
         return url is not None
 
+    def playIPlayerChannel(self,item):
+        if item:
+            url = item.getfilename()
+            if url:
+                if url[0:9] == 'plugin://':
+                    if self.alternativePlayback:
+                        xbmc.executebuiltin('XBMC.RunPlugin(%s)' % url)
+                    elif self.osdEnabled:
+                        xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+                    else:
+                        xbmc.executebuiltin('PlayMedia(%s)' % url)
+                else:
+                    self.player.play(item=url, windowed=self.osdEnabled)
+                self._hideEpg()
+                self._hideQuickEpg()
+                self._hideIPlayer()
+
+            threading.Timer(1, self.waitForPlayBackStopped, [item.getLabel()]).start()
+
+
+
+
     def waitForPlayBackStopped(self,title):
         time.sleep(0.5)
         self._showOsd()
@@ -1780,6 +1937,16 @@ class TVGuide(xbmcgui.WindowXML):
         self._hideControl(self.C_QUICK_EPG)
         self.mode = MODE_TV
         self._clearQuickEpg()
+
+    def _hideIPlayer(self):
+        xbmc.log("hide iplayed called")
+        self._hideControl(self.C_IPLAYER)
+        if self.player.isPlaying():
+            self.mode = MODE_TV
+        else:
+            self.onRedrawEPG(self.channelIdx, self.viewStartDate)
+            return
+
 
     def onRedrawEPG(self, channelStart, startTime, focusFunction=None):
         if self.redrawingEPG or (self.database is not None and self.database.updateInProgress) or self.isClosing:

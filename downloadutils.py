@@ -315,7 +315,7 @@ class DownloadUtils():
 
                 #lookup with thelogodb
                 if not image:
-                    url = 'http://www.thelogodb.com/api/json/v1/3241/tvchannel.php?s=%s' %self.tryEncode(channelname)
+                    url = 'https://www.thelogodb.com/api/json/v1/7533/tvchannel.php?s=%s' %self.tryEncode(channelname)
                     response = requests.get(url)
                     if response.content:
                         data = json.loads(response.content.decode('utf-8','replace'))
@@ -332,7 +332,7 @@ class DownloadUtils():
 
                 if not image:
                     search_alt = channelname.replace(" HD","")
-                    url = 'http://www.thelogodb.com/api/json/v1/3241/tvchannel.php?s=%s' %self.tryEncode(search_alt)
+                    url = 'https://www.thelogodb.com/api/json/v1/7533/tvchannel.php?s=%s' %self.tryEncode(search_alt)
                     response = requests.get(url)
                     if response.content:
                         data = json.loads(response.content.decode('utf-8','replace'))
