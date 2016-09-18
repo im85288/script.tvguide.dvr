@@ -52,6 +52,7 @@ MODE_TV = 'TV'
 MODE_OSD = 'OSD'
 MODE_LASTCHANNEL = 'LASTCHANNEL'
 MODE_IPLAYER = 'IPLAYER'
+MODE_STVB = 'STVB'
 
 ACTION_LEFT = 1
 ACTION_RIGHT = 2
@@ -240,8 +241,19 @@ class TVGuide(xbmcgui.WindowXML):
     C_IPLAYER_SEARCH_DISPLAY_TEXT = 15102
     C_IPLAYER_SEARCH_VISIBLE = 15200
 
+    C_STVB = 16000
+    C_STVB_EVENTS = 16001
+
     def __new__(cls):
-        return super(TVGuide, cls).__new__(cls, 'script-tvguide-main.xml', ADDON.getAddonInfo('path'), SKIN)
+        SKIN_PATH = 'script-tvguide-main-noiplayerstvb.xml'
+        if xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)") and xbmc.getCondVisibility("System.HasAddon(plugin.video.streamtvbox)"):
+            SKIN_PATH = 'script-tvguide-main.xml'
+        elif xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
+            SKIN_PATH = 'script-tvguide-main-nostvb.xml'
+        elif xbmc.getCondVisibility("System.HasAddon(plugin.video.streamtvbox)"):
+            SKIN_PATH = 'script-tvguide-main-noiplayer.xml'
+
+        return super(TVGuide, cls).__new__(cls, SKIN_PATH, ADDON.getAddonInfo('path'), SKIN)
 
     def __init__(self):
         super(TVGuide, self).__init__()
@@ -339,6 +351,7 @@ class TVGuide(xbmcgui.WindowXML):
         self._hideControl(self.C_UP_NEXT)
         self._hideControl(self.C_QUICK_EPG)
         self._hideControl(self.C_IPLAYER)
+        self._hideControl(self.C_STVB)
         self._showControl(self.C_MAIN_EPG, self.C_MAIN_LOADING)
         self.setControlLabel(self.C_MAIN_LOADING_TIME_LEFT, strings(BACKGROUND_UPDATE_IN_PROGRESS))
         self.setFocusId(self.C_MAIN_LOADING_CANCEL)
@@ -458,6 +471,7 @@ class TVGuide(xbmcgui.WindowXML):
             self._hideOsdOnly()
             self._hideQuickEpg()
             self._hideIPlayer()
+            self._hideStvb()
 
             self.currentChannel = None
             self.viewStartDate = datetime.datetime.today()
@@ -488,6 +502,12 @@ class TVGuide(xbmcgui.WindowXML):
             #control.addItem(liz)
 
             super(TVGuide, self).setFocus(control)
+        elif action.getId() in [REMOTE_8, ACTION_JUMP_SMS8] and xbmc.getCondVisibility("System.HasAddon(plugin.video.streamtvbox)"):
+            self._hideEpg()
+            self.mode = MODE_STVB
+            control = self.getControl(self.C_STVB_EVENTS)
+            self._showControl(self.C_STVB)
+            super(TVGuide, self).setFocus(control)
 
         if self.mode == MODE_TV:
             self.onActionTVMode(action)
@@ -501,6 +521,8 @@ class TVGuide(xbmcgui.WindowXML):
             self.onActionLastPlayedMode(action)
         elif self.mode == MODE_IPLAYER:
             self.onActionIPlayerMode(action)
+        elif self.mode == MODE_STVB:
+            self.onActionStvbMode(action)
 
     def onActionTVMode(self, action):
         if action.getId() == ACTION_PAGE_UP:
@@ -790,6 +812,22 @@ class TVGuide(xbmcgui.WindowXML):
 
         else:
             xbmc.log('[script.tvguide.dvr] iplayer Unhandled ActionId: ' + str(action.getId()), xbmc.LOGDEBUG)
+
+    def onActionStvbMode(self, action):
+        if action.getId() in [ACTION_PARENT_DIR, KEY_NAV_BACK]:
+            self._hideStvb()
+
+        # catch the ESC key
+        elif action.getId() == ACTION_PREVIOUS_MENU and action.getButtonCode() == KEY_ESC:
+            self._hideStvb()
+
+        elif action.getId() == ACTION_SELECT_ITEM:
+            # must be playable item
+            if self.player.isPlaying:
+                self._hideStvb()
+
+        else:
+            xbmc.log('[script.tvguide.dvr] stvb Unhandled ActionId: ' + str(action.getId()), xbmc.LOGDEBUG)
 
     def onClick(self, controlId):
         xbmc.log("onClick called for control %s" %controlId)
@@ -1941,6 +1979,15 @@ class TVGuide(xbmcgui.WindowXML):
     def _hideIPlayer(self):
         xbmc.log("hide iplayed called")
         self._hideControl(self.C_IPLAYER)
+        if self.player.isPlaying():
+            self.mode = MODE_TV
+        else:
+            self.onRedrawEPG(self.channelIdx, self.viewStartDate)
+            return
+
+    def _hideStvb(self):
+        xbmc.log("hide stvb called")
+        self._hideControl(self.C_STVB)
         if self.player.isPlaying():
             self.mode = MODE_TV
         else:
