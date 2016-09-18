@@ -548,7 +548,12 @@ class TVGuide(xbmcgui.WindowXML):
             self._playLastChannel()
         elif action.getId() == ACTION_RIGHT:
             self._showLastPlayedChannel()
-        elif action.getId() == ACTION_LEFT:
+        elif action.getId() == ACTION_LEFT and xbmc.getCondVisibility("System.HasAddon(plugin.video.streamtvbox)"):
+            self.mode = MODE_STVB
+            control = self.getControl(self.C_STVB_EVENTS)
+            self._showControl(self.C_STVB)
+            super(TVGuide, self).setFocus(control)
+        elif action.getId() == ACTION_LEFT and not xbmc.getCondVisibility("System.HasAddon(plugin.video.streamtvbox)"):
             self._showLastPlayedChannel()
         elif action.getId() == ACTION_UP:
             self.quickViewStartDate = datetime.datetime.today()
