@@ -8,6 +8,7 @@ import re
 import xbmc, xbmcvfs, xbmcgui
 import BeautifulSoup
 import urllib2
+import os
 try:
     import simplejson as json
 except:
@@ -56,6 +57,12 @@ class DownloadUtils():
             return text.decode(encoding,"ignore")
         except:
             return text
+
+    def encodeString(self,string):
+        return (string.encode('base64')).replace('\n','').replace('\r','').replace('\t','')
+
+    def decodeString(self,string):
+        return string.decode('base64')
 
     def checkIconExists(self, icon):
         try:
@@ -407,3 +414,87 @@ class DownloadUtils():
 
             WINDOW.setProperty(self.tryEncode(cacheStr), repr(results))
             self.top250 = results
+
+    def setJSON(self,method,params):
+        json_response = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method" : "%s", "params": %s, "id":1 }' %(method, self.tryEcode(params)))
+        jsonobject = json.loads(json_response.decode('utf-8','replace'))
+        return jsonobject
+
+    def getJSON(self,method,params):
+        json_response = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method" : "%s", "params": %s, "id":1 }' %(method, self.tryEncode(params)))
+        jsonobject = json.loads(json_response.decode('utf-8','replace'))
+        if(jsonobject.has_key('result')):
+            jsonobject = jsonobject['result']
+            if isinstance(jsonobject, list):
+                return jsonobject
+            if jsonobject.has_key('files'):
+                return jsonobject['files']
+            elif jsonobject.has_key('movies'):
+                return jsonobject['movies']
+            elif jsonobject.has_key('tvshows'):
+                return jsonobject['tvshows']
+            elif jsonobject.has_key('episodes'):
+                return jsonobject['episodes']
+            elif jsonobject.has_key('musicvideos'):
+                return jsonobject['musicvideos']
+            elif jsonobject.has_key('channels'):
+                return jsonobject['channels']
+            elif jsonobject.has_key('recordings'):
+                return jsonobject['recordings']
+            elif jsonobject.has_key('timers'):
+                return jsonobject['timers']
+            elif jsonobject.has_key('channeldetails'):
+                return jsonobject['channeldetails']
+            elif jsonobject.has_key('recordingdetails'):
+                return jsonobject['recordingdetails']
+            elif jsonobject.has_key('songs'):
+                return jsonobject['songs']
+            elif jsonobject.has_key('albums'):
+                return jsonobject['albums']
+            elif jsonobject.has_key('songdetails'):
+                return jsonobject['songdetails']
+            elif jsonobject.has_key('albumdetails'):
+                return jsonobject['albumdetails']
+            elif jsonobject.has_key('artistdetails'):
+                return jsonobject['artistdetails']
+            elif jsonobject.get('favourites'):
+                return jsonobject['favourites']
+            elif jsonobject.has_key('tvshowdetails'):
+                return jsonobject['tvshowdetails']
+            elif jsonobject.has_key('episodedetails'):
+                return jsonobject['episodedetails']
+            elif jsonobject.has_key('moviedetails'):
+                return jsonobject['moviedetails']
+            elif jsonobject.has_key('setdetails'):
+                return jsonobject['setdetails']
+            elif jsonobject.has_key('musicvideodetails'):
+                return jsonobject['musicvideodetails']
+            elif jsonobject.has_key('sets'):
+                return jsonobject['sets']
+            elif jsonobject.has_key('video'):
+                return jsonobject['video']
+            elif jsonobject.has_key('artists'):
+                return jsonobject['artists']
+            elif jsonobject.has_key('channelgroups'):
+                return jsonobject['channelgroups']
+            elif jsonobject.get('sources'):
+                return jsonobject['sources']
+            elif jsonobject.has_key('addons'):
+                return jsonobject['addons']
+            elif jsonobject.has_key('item'):
+                return jsonobject['item']
+            elif jsonobject.has_key('genres'):
+                return jsonobject['genres']
+            elif jsonobject.has_key('value'):
+                return jsonobject['value']
+            else:
+                return {}
+        else:
+            return {}
+
+    def listdir(self,file):
+        try:
+            results = xbmcvfs.listdir(os.path.join(file,''))
+            return results
+        except:
+            return [],[]

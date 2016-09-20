@@ -27,7 +27,7 @@
 
 import os
 import threading
-import datetime
+import datetime, calendar, _strptime
 import time
 from xml.etree import ElementTree
 import re
@@ -41,6 +41,13 @@ import xbmcgui
 import xbmcvfs
 import xbmcaddon
 import sqlite3
+import downloadutils
+from datetime import timedelta
+
+try:
+    import simplejson as json
+except:
+    import json
 
 SETTINGS_TO_CHECK = ['source', 'xmltv.type', 'xmltv.file', 'xmltv.url', 'xmltv.logo.folder']
 
@@ -444,6 +451,10 @@ class Database(object):
                             'UPDATE channels SET title=?, logo=?, stream_url=?, visible=(CASE ? WHEN -1 THEN visible ELSE ? END), weight=(CASE ? WHEN -1 THEN weight ELSE ? END) WHERE id=? AND source=?',
                             [channel.title, channel.logo, channel.streamUrl, channel.weight, channel.visible,
                              channel.weight, channel.weight, channel.id, self.source.KEY])
+
+                    if channel.streamUrl:
+                        c.execute("INSERT INTO custom_stream_url(channel, stream_url) VALUES(?, ?)",
+                                  [channel.id, channel.streamUrl.decode('utf-8', 'ignore')])
 
                 elif isinstance(item, Program):
                     imported_programs += 1
@@ -1652,6 +1663,169 @@ class XMLTVSource(Source):
 
             root.clear()
         f.close()
+
+class PVRSource(Source):
+    KEY = 'pvr'
+    def __init__(self, addon):
+        self.needReset = False
+        # make sure we have pvr channels!
+        if not xbmc.getCondVisibility('Pvr.HasTVChannels'):
+            raise SourceNotConfiguredException()
+
+    def getDataFromExternal(self, date, progress_callback=None):
+        return self.parsePVRChannels(progress_callback)
+
+    def isUpdated(self, channelsLastUpdated, programLastUpdate):
+        return True
+
+    def getPVRLink(self, channel):
+        try:
+            PVRverPath = "pvr://channels/tv/All channels/"
+            PVRPath = downloadutils.DownloadUtils().listdir(PVRverPath)
+            return os.path.join(PVRverPath,PVRPath[1][channel])
+        except:
+            pass
+
+
+    def parsePVRChannels(self, progress_callback):
+        elements_parsed = 0
+        now = self.parsePVRDate((str(datetime.datetime.utcnow())).split(".")[0])
+        # Perform a JSON query to get all channels
+        json_query = downloadutils.DownloadUtils().getJSON('PVR.GetChannels', '{"channelgroupid": "alltv", "properties": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow" ], "limits": {"end": %d}}' %( 500 ) )
+        for channel in json_query:
+            result = None
+            channelname = channel["label"]
+            channelid = channel["channelid"]
+            channellogo = channel['thumbnail']
+            streamUrl = self.getPVRLink(channelid)
+            if channel.has_key('broadcastnow'):
+                #channel with epg data
+                item = channel['broadcastnow']
+
+
+            result = Channel(channelname, channelname, channellogo, streamUrl, True)
+            xbmc.log("adding channel %s" %result)
+
+            if result:
+                elements_parsed += 1
+                yield result
+
+        for channel in json_query:
+            result = None
+            channelid = channel["channelid"]
+            channelname = channel["label"]
+            if channel.has_key('broadcastnow'):
+                xbmc.log("parsing program channels request details for channel id %s" %channelid)
+                #json_query = downloadutils.DownloadUtils().getJSON('PVR.GetBroadcasts','{"channelid":%s,"properties":["title","plot","plotoutline","starttime","endtime","runtime","genre","episodename","episodenum","episodepart","firstaired","hastimer","parentalrating","thumbnail","rating"], "limits": 500}' % (channelid))
+
+                json_query = ('{"jsonrpc":"2.0","method":"PVR.GetBroadcasts","params":{"channelid":%s,"properties":["title","plot","plotoutline","starttime","endtime","runtime","genre","episodename","episodenum","episodepart","firstaired","hastimer","parentalrating","thumbnail","rating"]}, "id": 1}' % channelid)
+                json_folder_detail = self.sendJSON(json_query)
+                jsonobject = json.loads(json_folder_detail.decode('utf-8','replace'))
+                result = jsonobject['result']
+                for program in result['broadcasts']:
+
+                    showtitle = program["title"]
+
+                    dur = 0
+                    seasonNumber = 0
+                    episodeNumber = 0
+
+                    startDate = self.parsePVRDate(program["starttime"])
+                    stopDate = self.parsePVRDate(program["endtime"])
+
+                    #skip old shows that have already ended
+                    if now > stopDate:
+                        continue
+
+                    #adjust the duration of the current show
+                    if now >= startDate and now <= stopDate:
+                        runtimes = program["runtime"]
+                        if runtimes:
+                            dur = int(runtimes) * 60
+                        else:
+                            dur = ((stopDate - startDate).seconds)
+
+                            #use the full duration for an upcoming show
+                    if now < startDate:
+                        runtimes = program["runtime"]
+                        if runtimes:
+                            dur = int(runtimes) * 60
+                        else:
+                            dur = ((stopDate - startDate).seconds)
+
+                    if dur > 0:
+                        movie = False
+                        genres = program["genre"]
+                        if genres and len(genres) > 0:
+                            genre = genres[0]
+                            if genre.lower() == 'movie':
+                                movie = True
+                        else:
+                            genre = 'Unknown'
+
+                        if movie == True:
+                            is_movie = "Movie"
+                        else:
+                            is_movie = "TV"
+
+                        description = downloadutils.DownloadUtils().tryDecode(program["plot"])
+                        if not description:
+                            description = strings(NO_DESCRIPTION)
+
+                        thumbs = program["thumbnail"]
+                        if thumbs:
+                            thumburl = downloadutils.DownloadUtils().encodeString(thumbs)
+                        else:
+                            thumburl = 0
+
+                        if seasonNumber > 0:
+                            seasonNumber = '%02d' % int(seasonNumber)
+
+                        if episodeNumber > 0:
+                            episodeNumber = '%02d' % int(episodeNumber)
+
+
+                        result = Program(channelname, showtitle, startDate,
+                                             stopDate, description, imageSmall=thumburl,
+                                             season = seasonNumber, episode = episodeNumber, is_movie = is_movie, language= None,imdbid=None,tvdbid=None)
+
+
+
+            if result:
+                    elements_parsed += 1
+                    yield result
+
+    def sendJSON(self, command):
+        data = ''
+        try:
+            data = xbmc.executeJSONRPC(self.uni(command))
+        except UnicodeEncodeError:
+            data = xbmc.executeJSONRPC(self.ascii(command))
+        return self.uni(data)
+
+    def ascii(self,string):
+        if isinstance(string, basestring):
+            if isinstance(string, unicode):
+                string = string.encode('ascii', 'ignore')
+        return string
+
+    def uni(self,string):
+        if isinstance(string, basestring):
+            if isinstance(string, unicode):
+                string = string.encode('utf-8', 'ignore' )
+        return string
+
+    def parsePVRDate(self, dateString):
+        if dateString is not None:
+            t = time.strptime(dateString, '%Y-%m-%d %H:%M:%S')
+            tmpDate = datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+            timestamp = calendar.timegm(tmpDate.timetuple())
+            local_dt = datetime.datetime.fromtimestamp(timestamp)
+            assert tmpDate.resolution >= timedelta(microseconds=1)
+            return local_dt.replace(microsecond=tmpDate.microsecond)
+        else:
+            return None
+
 
 
 class FileWrapper(object):
