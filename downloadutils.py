@@ -38,6 +38,7 @@ class DownloadUtils():
     unauthorizedAttempts = 2
     omdbinfocache = {}
     tmdbinfocache = {}
+    dbartworkcache = {}
     top250 = {}
     tmdb_apiKey = "ae06df54334aa653354e9a010f4b81cb"
 
@@ -209,6 +210,18 @@ class DownloadUtils():
         #store in cache for quick access later
         WINDOW.setProperty(self.tryEncode(cacheStr), repr(media_id))
         return media_id
+
+    def getArtworkFavourCache(self, mediaId, database):
+        if self.dbartworkcache.get(mediaId):
+            return self.dbartworkcache.get(mediaId)
+        else:
+            #not in any cache, try database
+            databaseartwork = database.getArtworkForId(mediaId)
+            if databaseartwork is not None:
+                #found in database, put in database cache
+                self.dbartworkcache[mediaId] = databaseartwork
+            return databaseartwork
+
 
 
     def getFanartTVArt(self, mediaId, type):

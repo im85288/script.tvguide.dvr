@@ -1143,7 +1143,7 @@ class TVGuide(xbmcgui.WindowXML):
         self.setControlImage(self.C_MAIN_IMAGE_LARGE, '')
         self.setControlLabel(self.C_MAIN_IMDB_RATING, '')
         self.setControlLabel(self.C_MAIN_IMDB250_RATING, 'N/A')
-        if program.is_movie == "Movie" or program.is_movie == "TV":
+        if (program.is_movie == "Movie" or program.is_movie == "TV") and self.mode == MODE_EPG:
             if program.is_movie == "Movie":
                 media_type = 'movie'
             else:
@@ -1161,13 +1161,13 @@ class TVGuide(xbmcgui.WindowXML):
                 imdbid =  program.tvdbid
 
             if imdbid and imdbid != "None":
-                databaseartwork = self.database.getArtworkForId(imdbid)
+                databaseartwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
                 if databaseartwork is not None:
                     artwork = databaseartwork
                 else:
                     downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
                     self.database.setArtworkForId(downloadedartwork,imdbid)
-                    artwork = self.database.getArtworkForId(imdbid)
+                    artwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
             else:
                 artwork = None
 
@@ -1701,13 +1701,13 @@ class TVGuide(xbmcgui.WindowXML):
                     imdbid =  self.osdProgram.tvdbid
 
                 if imdbid and imdbid != "None":
-                    databaseartwork = self.database.getArtworkForId(imdbid)
+                    databaseartwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
                     if databaseartwork is not None:
                         artwork = databaseartwork
                     else:
                         downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
                         self.database.setArtworkForId(downloadedartwork,imdbid)
-                        artwork = self.database.getArtworkForId(imdbid)
+                        artwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
                 else:
                     artwork = None
                 if artwork:
@@ -1818,13 +1818,13 @@ class TVGuide(xbmcgui.WindowXML):
                     elif nextOsdProgram.tvdbid and nextOsdProgram.is_movie == "TV":
                         imdbid =  nextOsdProgram.tvdbid
                     if imdbid and imdbid != "None":
-                        databaseartwork = self.database.getArtworkForId(imdbid)
+                        databaseartwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
                         if databaseartwork is not None:
                             artwork = databaseartwork
                         else:
                             downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
                             self.database.setArtworkForId(downloadedartwork,imdbid)
-                            artwork = self.database.getArtworkForId(imdbid)
+                            artwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
                     else:
                         artwork = None
                     if artwork:
