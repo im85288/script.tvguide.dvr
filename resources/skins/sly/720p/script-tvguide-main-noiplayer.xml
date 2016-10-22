@@ -255,7 +255,7 @@
                 <width>5</width>
                 <height>446</height>
                 <visible>!Control.IsVisible(5000)</visible>
-                <texture colordiffuse="FF00ff48">white50.png</texture>
+                <texture colordiffuse="FF0A0C0D">white50.png</texture>
             </control>
 
             <control type="image">
@@ -398,7 +398,7 @@
                     <width>5</width>
                     <height>40</height>
                     <visible>!Control.IsVisible(5000)</visible>
-                    <texture colordiffuse="FF00ff48">white50.png</texture>
+                    <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 </control>
 
                 <control type="image">
@@ -1433,7 +1433,7 @@
                 <control type="image">
                     <description>loading background</description>
                     <posx>-340</posx>
-                    <posy>-310</posy>
+                    <posy>-250</posy>
                     <width>1280</width>
                     <height>720</height>
                     <texture>background.png</texture>
@@ -1482,7 +1482,7 @@
                 <control type="button" id="4203">
                     <posx>70</posx>
                     <posy>100</posy>
-                    <width>150</width>
+                    <width>200</width>
                     <height>50</height>
                     <label>$ADDON[script.tvguide.dvr 30008]</label>
                     <textcolor>ffffffff</textcolor>
@@ -2438,7 +2438,7 @@
                 <posy>0</posy>
                 <width>5</width>
                 <height>116</height>
-                <texture colordiffuse="FF00ff48">white50.png</texture>
+                <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 <visible>!Control.IsVisible(10000)</visible>
             </control>
 
@@ -2544,7 +2544,7 @@
                     <width>5</width>
                     <height>40</height>
                     <visible>!Control.IsVisible(10000)</visible>
-                    <texture colordiffuse="FF00ff48">white50.png</texture>
+                    <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 </control>
 
                 <control type="image">
@@ -3214,7 +3214,7 @@
                         <height>20</height>
                         <textcolor>ddcccccc</textcolor>
                         <font>font13_title</font>
-                        <label>NFL</label>
+                        <label>Match Day</label>
                         <visible>!Control.HasFocus(16003)</visible>
                     </control>
                     <control type="label">
@@ -3224,11 +3224,11 @@
                         <height>20</height>
                         <textcolor>ddcccccc</textcolor>
                         <font>font13_title</font>
-                        <label>$INFO[Container(16003).ListItem.Label,NFL - [COLOR=ffff008e],[/COLOR]]</label>
+                        <label>$INFO[Container(16003).ListItem.Label,Match Day - [COLOR=ffff008e],[/COLOR]]</label>
                         <visible>Control.HasFocus(16003)</visible>
                     </control>
                     <control type="wraplist" id="16003">
-                        <description>NFL</description>
+                        <description>Match Day</description>
                         <posx>0</posx>
                         <posy>20</posy>
                         <height>300</height>
@@ -3311,7 +3311,7 @@
                                 <visible>Control.HasFocus(16003)</visible>
                             </control>
                         </focusedlayout>
-                        <content target="">plugin://plugin.video.streamtvbox/?date&amp;description&amp;iconimage=http%3a%2f%2fstreamtvbox.club%2fapk%2fcat_images%2fusa.png&amp;mode=2005&amp;name=NFL&amp;page&amp;play&amp;url=http%3a%2f%2fstreamtvbox.club%2fapisprotected%2fusa.php</content>
+                        <content target="">plugin://plugin.video.streamtvbox/?date&amp;description&amp;mode=4&amp;name=Match%20Day&amp;page&amp;play&amp;url=53</content>
                     </control>
                 </control>
                 <control type="group">
@@ -3325,7 +3325,7 @@
                         <height>20</height>
                         <textcolor>ddcccccc</textcolor>
                         <font>font13_title</font>
-                        <label>MLB</label>
+                        <label>NFL</label>
                         <visible>!Control.HasFocus(16004)</visible>
                     </control>
                     <control type="label">
@@ -3335,18 +3335,18 @@
                         <height>20</height>
                         <textcolor>ddcccccc</textcolor>
                         <font>font13_title</font>
-                        <label>$INFO[Container(16004).ListItem.Label,MLB - [COLOR=ffff008e],[/COLOR]]</label>
+                        <label>$INFO[Container(16004).ListItem.Label,NFL - [COLOR=ffff008e],[/COLOR]]</label>
                         <visible>Control.HasFocus(16004)</visible>
                     </control>
                     <control type="wraplist" id="16004">
-                        <description>MLB</description>
+                        <description>NFL</description>
                         <posx>0</posx>
                         <posy>20</posy>
                         <height>300</height>
                         <width>1280</width>
                         <onback>300</onback>
                         <onup>16003</onup>
-                        <ondown>16001</ondown>
+                        <ondown>16005</ondown>
                         <preloaditems>2</preloaditems>
                         <orientation>horizontal</orientation>
                         <autoscroll time="10000">!Control.HasFocus(16004)</autoscroll>
@@ -3420,6 +3420,117 @@
                                 <animation effect="fade" start="0" end="100" time="200">Focus</animation>
                                 <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
                                 <visible>Control.HasFocus(16004)</visible>
+                            </control>
+                        </focusedlayout>
+                        <content target="">plugin://plugin.video.streamtvbox/?date&amp;description&amp;iconimage=http%3a%2f%2fstreamtvbox.club%2fapk%2fcat_images%2fusa.png&amp;mode=2005&amp;name=NFL&amp;page&amp;play&amp;url=http%3a%2f%2fstreamtvbox.club%2fapisprotected%2fusa.php</content>
+                    </control>
+                </control>
+                <control type="group">
+                    <height>320</height>
+                    <left>0</left>
+                    <top>0</top>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>MLB</label>
+                        <visible>!Control.HasFocus(16005)</visible>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>1200</width>
+                        <height>20</height>
+                        <textcolor>ddcccccc</textcolor>
+                        <font>font13_title</font>
+                        <label>$INFO[Container(16005).ListItem.Label,MLB - [COLOR=ffff008e],[/COLOR]]</label>
+                        <visible>Control.HasFocus(16005)</visible>
+                    </control>
+                    <control type="wraplist" id="16005">
+                        <description>MLB</description>
+                        <posx>0</posx>
+                        <posy>20</posy>
+                        <height>300</height>
+                        <width>1280</width>
+                        <onback>300</onback>
+                        <onup>16004</onup>
+                        <ondown>16001</ondown>
+                        <preloaditems>2</preloaditems>
+                        <orientation>horizontal</orientation>
+                        <autoscroll time="10000">!Control.HasFocus(16005)</autoscroll>
+                        <scrolltime tween="quadratic">100</scrolltime>
+                        <itemlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>167</height>
+                                <aspectratio aligny="top">stretch</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">http://localhost:52307/getthumb&amp;title=$INFO[Listitem.Label]</texture>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                        </itemlayout>
+
+                        <focusedlayout width="341" height="300">
+                            <control type="image">
+                                <left>0</left>
+                                <top>1</top>
+                                <width>348</width>
+                                <height>290</height>
+                                <texture border="40">button-nofo.png</texture>
+                            </control>
+                            <control type="image">
+                                <left>25</left>
+                                <top>25</top>
+                                <width>298</width>
+                                <height>167</height>
+                                <aspectratio aligny="top">stretch</aspectratio>
+                                <texture fallback="DefaultVideo.png" background="true">http://localhost:52307/getthumb&amp;title=$INFO[Listitem.Label]</texture>
+                            </control>
+                            <control type="textbox">
+                                <left>30</left>
+                                <top>194</top>
+                                <width>288</width>
+                                <label>[COLOR =FF00ff48]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode] [/COLOR]$INFO[ListItem.Label]</label>
+                                <font>font12</font>
+                                <textcolor>ccffffff</textcolor>
+                                <shadowcolor>text_shadow</shadowcolor>
+                                <align>center</align>
+                                <aligny>center</aligny>
+                                <height>61</height>
+                                <wrapmultiline>true</wrapmultiline>
+                            </control>
+                            <control type="image">
+                                <left>18.5</left>
+                                <top>17</top>
+                                <width>312</width>
+                                <height>256</height>
+                                <texture background="true" border="8" colordiffuse="FF00ff48">thumbnail_focused.png</texture>
+                                <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                                <animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+                                <visible>Control.HasFocus(16005)</visible>
                             </control>
                         </focusedlayout>
                         <content target="">plugin://plugin.video.streamtvbox/?date&amp;description&amp;iconimage=http%3a%2f%2fstreamtvbox.club%2fapk%2fcat_images%2fusa.png&amp;mode=2005&amp;name=MLB&amp;page&amp;play&amp;url=http%3a%2f%2fstreamtvbox.club%2fapisprotected%2fmlb.php</content>

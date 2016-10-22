@@ -2162,6 +2162,7 @@ class TVGuide(xbmcgui.WindowXML):
         control = self.getControl(self.C_MAIN_TIMEBAR)
         if control:
             control.setHeight(top-2)
+            control.setWidth(5)
         self.getControl(self.C_MAIN_BACKGROUND).setHeight(top+2)
 
         # add program controls
@@ -2709,7 +2710,9 @@ class TVGuide(xbmcgui.WindowXML):
                 control.setVisible(timeDelta.days == 0)
             except:
                 pass
-            control.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+            controlWidth = self._secondsToXposition(timeDelta.seconds) - 180
+            control.setWidth(controlWidth)
+            #control.setPosition(self._secondsToXposition(timeDelta.seconds), y)
 
         control2 = self.getControl(self.C_MAIN_TIMEBAR_HEAD)
         if control2:
@@ -2720,7 +2723,9 @@ class TVGuide(xbmcgui.WindowXML):
                 control2.setVisible(timeDelta.days == 0)
             except:
                 pass
-            control2.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+            controlWidth = self._secondsToXposition(timeDelta.seconds) - 180
+            control2.setWidth(controlWidth)
+            #control2.setPosition(self._secondsToXposition(timeDelta.seconds), y)
 
         if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
             threading.Timer(1, self.updateTimebar).start()
@@ -2737,7 +2742,8 @@ class TVGuide(xbmcgui.WindowXML):
                 control.setVisible(timeDelta.days == 0)
             except:
                 pass
-            control.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+            controlWidth = self._secondsToXposition(timeDelta.seconds) - 180
+            control.setWidth(controlWidth)
 
         control2 = self.getControl(self.C_QUICK_EPG_TIMEBAR_HEAD)
         if control2:
@@ -2748,7 +2754,8 @@ class TVGuide(xbmcgui.WindowXML):
                 control2.setVisible(timeDelta.days == 0)
             except:
                 pass
-            control2.setPosition(self._secondsToXposition(timeDelta.seconds), y)
+            controlWidth = self._secondsToXposition(timeDelta.seconds) - 180
+            control2.setWidth(controlWidth)
 
         if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
             threading.Timer(1, self.updateQuickTimebar).start()

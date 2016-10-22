@@ -255,7 +255,7 @@
                 <width>5</width>
                 <height>446</height>
                 <visible>!Control.IsVisible(5000)</visible>
-                <texture colordiffuse="FF00ff48">white50.png</texture>
+                <texture colordiffuse="FF0A0C0D">white50.png</texture>
             </control>
 
             <control type="image">
@@ -388,7 +388,7 @@
                     <width>5</width>
                     <height>40</height>
                     <visible>!Control.IsVisible(5000)</visible>
-                    <texture colordiffuse="FF00ff48">white50.png</texture>
+                    <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 </control>
 
                 <control type="image">
@@ -1423,7 +1423,7 @@
                 <control type="image">
                     <description>loading background</description>
                     <posx>-340</posx>
-                    <posy>-310</posy>
+                    <posy>-250</posy>
                     <width>1280</width>
                     <height>720</height>
                     <texture>background.png</texture>
@@ -1472,7 +1472,7 @@
                 <control type="button" id="4203">
                     <posx>70</posx>
                     <posy>100</posy>
-                    <width>150</width>
+                    <width>200</width>
                     <height>50</height>
                     <label>$ADDON[script.tvguide.dvr 30008]</label>
                     <textcolor>ffffffff</textcolor>
@@ -2428,7 +2428,7 @@
                 <posy>0</posy>
                 <width>5</width>
                 <height>116</height>
-                <texture colordiffuse="FF00ff48">white50.png</texture>
+                <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 <visible>!Control.IsVisible(10000)</visible>
             </control>
 
@@ -2534,7 +2534,7 @@
                     <width>5</width>
                     <height>40</height>
                     <visible>!Control.IsVisible(10000)</visible>
-                    <texture colordiffuse="FF00ff48">white50.png</texture>
+                    <texture colordiffuse="FF0A0C0D">white50.png</texture>
                 </control>
 
                 <control type="image">
