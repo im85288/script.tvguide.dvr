@@ -151,7 +151,7 @@
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>background.png</texture>
+            <texture>background3.png</texture>
             <visible>StringCompare(Control.GetLabel(7033),)</visible>
         </control>
         <control type="image" id="7033">
@@ -178,7 +178,7 @@
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>background.png</texture>
+            <texture>background3.png</texture>
             <visible>Control.IsVisible(5000)</visible>
         </control>
         <!-- Background -->
@@ -1426,7 +1426,7 @@
                     <posy>-250</posy>
                     <width>1280</width>
                     <height>720</height>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                 </control>
 
                 <control type="image">
@@ -2419,7 +2419,7 @@
                 <posy>-2</posy>
                 <width>1280</width>
                 <height>126</height>
-                <texture>background.png</texture>
+                <texture>background3.png</texture>
                 <visible>!Control.IsVisible(10000)</visible>
             </control>
             <control type="image" id="14100">
@@ -2524,7 +2524,7 @@
                     <posy>10</posy>
                     <width>1280</width>
                     <height>40</height>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                     <visible>true</visible>
                 </control>
                 <control type="image" id="14101">
@@ -2666,7 +2666,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                 </control>
                 <control type="image" id="14211">
                     <description>2nd channel</description>
@@ -2678,7 +2678,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                 </control>
                 <control type="image" id="14212">
                     <description>3rd channel</description>
@@ -2690,7 +2690,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                 </control>
 
                 <!-- text labels -->
@@ -2867,7 +2867,7 @@
                 <posy>-135</posy>
                 <width>1280</width>
                 <height>66</height>
-                <texture>background.png</texture>
+                <texture>background3.png</texture>
                 <visible>Control.IsVisible(17022)</visible>
             </control>
 
