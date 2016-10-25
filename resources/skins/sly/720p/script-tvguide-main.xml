@@ -1206,7 +1206,7 @@
                     <width>65</width>
                     <bordersize>2</bordersize>
                     <texture border="5">panel.png</texture>
-                    <colordiffuse>darkgrey</colordiffuse>
+                    <colordiffuse>ff222222</colordiffuse>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
@@ -1247,7 +1247,7 @@
                     <width>65</width>
                     <bordersize>2</bordersize>
                     <texture border="5">panel.png</texture>
-                    <colordiffuse>darkgrey</colordiffuse>
+                    <colordiffuse>ff222222</colordiffuse>
                     <aspectratio>stretch</aspectratio>
                 </control>
                 <control type="image">
