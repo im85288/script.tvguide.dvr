@@ -470,7 +470,7 @@ msgid "Streaming using that addon is now disabled."
 msgstr ""
 
 msgctxt "#30900"
-msgid "Autostart FTV Guide when Kodi starts up"
+msgid "Autostart Guide when Kodi starts up"
 msgstr ""
 
 msgctxt "#31000"

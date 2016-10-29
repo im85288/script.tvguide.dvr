@@ -1120,6 +1120,26 @@ class TVGuide(xbmcgui.WindowXML):
 
         super(TVGuide, self).setFocus(control)
 
+    def updateArtworkToDatabase(self, imdbid,media_type):
+        downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
+        self.database.setArtworkForId(downloadedartwork,imdbid)
+
+    def updateRatingsToDatabase(self, program, imdbid ):
+        downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+        if program.is_movie == "Movie":
+            downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+        else:
+            downloadedtmdbInfo = {}
+        self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+
+    def updateImdbIdToDatabase(self, program,title,media_type):
+        imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+        self.database.setImdbId(program, imdbid)
+
+    def updateTvdbIdToDatabase(self, program,title,media_type):
+        imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
+        self.database.setTvdbId(program, imdbid)
+
     def onFocus(self, controlId):
         try:
             controlInFocus = self.getControl(controlId)
@@ -1144,19 +1164,20 @@ class TVGuide(xbmcgui.WindowXML):
         self.setControlLabel(self.C_MAIN_IMDB_RATING, '')
         self.setControlLabel(self.C_MAIN_IMDB250_RATING, 'N/A')
         if (program.is_movie == "Movie" or program.is_movie == "TV") and self.mode == MODE_EPG:
+
             if program.is_movie == "Movie":
                 media_type = 'movie'
             else:
                 media_type = 'tv'
             if program.imdbid is None and program.is_movie == "Movie":
-                imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
-                self.database.setImdbId(program, imdbid)
+                threading.Thread(name='updateimdbid', target=self.updateImdbIdToDatabase, args= (program,title,media_type)).start()
+                imdbid =  None
             elif program.imdbid and program.is_movie == "Movie":
                 imdbid =  program.imdbid
 
             if program.tvdbid is None and program.is_movie == "TV":
-                imdbid =  downloadutils.DownloadUtils().getExternalId(title,media_type)
-                self.database.setTvdbId(program, imdbid)
+                threading.Thread(name='updatetvdbid', target=self.updateTvdbIdToDatabase, args= (program,title,media_type)).start()
+                imdbid =  None
             elif program.tvdbid and program.is_movie == "TV":
                 imdbid =  program.tvdbid
 
@@ -1165,9 +1186,8 @@ class TVGuide(xbmcgui.WindowXML):
                 if databaseartwork is not None:
                     artwork = databaseartwork
                 else:
-                    downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
-                    self.database.setArtworkForId(downloadedartwork,imdbid)
-                    artwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
+                    threading.Thread(name='updateartwork', target=self.updateArtworkToDatabase, args= (imdbid,media_type)).start()
+                    artwork = None
             else:
                 artwork = None
 
@@ -1208,23 +1228,13 @@ class TVGuide(xbmcgui.WindowXML):
                     today = datetime.datetime.today()
                     expirydate = today - datetime.timedelta(days=60)
                     if createddate and createddate < expirydate:
-                        downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
-                        if program.is_movie == "Movie":
-                            downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
-                        else:
-                            downloadedtmdbInfo = {}
-                        self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
-                        rating = self.database.getRatingsForId(imdbid)
+                        threading.Thread(name='updateratings', target=self.updateRatingsToDatabase, args= (program,imdbid)).start()
+                        rating = None
                     else:
                         rating = databaserating
                 else:
-                    downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
-                    if program.is_movie == "Movie":
-                        downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
-                    else:
-                        downloadedtmdbInfo = {}
-                    self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
-                    rating = self.database.getRatingsForId(imdbid)
+                    threading.Thread(name='updateratings', target=self.updateRatingsToDatabase, args= (program,imdbid)).start()
+                    rating = None
 
                 if rating:
                     tomatometer = rating.tomatometer
