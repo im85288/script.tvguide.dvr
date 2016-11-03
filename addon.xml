@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.tvguide.dvr" name="TV Guide DVR" version="0.0.21" provider-name="im85288">
+<addon id="script.tvguide.dvr" name="TV Guide DVR" version="0.0.22" provider-name="im85288">
 	<requires>
 		<import addon="xbmc.python" version="2.19.0"/>
 		<import addon="script.module.simplejson" version="3.3.0"/>
@@ -11,7 +11,7 @@
     </extension>
     <extension point="xbmc.service" library="service.py" start="login"/>
 	<extension point="xbmc.addon.metadata">
-		<disclaimer lang="en">based on the original TV Guide addon by twinther and FTV Guide additions</disclaimer>
+		<disclaimer lang="en">based on primaeval's fullscreen tv guide</disclaimer>
 		<language></language>
 		<platform>all</platform>
 		<license>GPLv2</license>

@@ -1208,13 +1208,23 @@ class TVGuide(xbmcgui.WindowXML):
                     today = datetime.datetime.today()
                     expirydate = today - datetime.timedelta(days=60)
                     if createddate and createddate < expirydate:
-                        threading.Thread(name='updateratings', target=self.updateRatingsToDatabase, args= (program,imdbid)).start()
-                        rating = None
+                        downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                        if program.is_movie == "Movie":
+                            downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                        else:
+                            downloadedtmdbInfo = {}
+                        self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                        rating = self.database.getRatingsForId(imdbid)
                     else:
                         rating = databaserating
                 else:
-                    threading.Thread(name='updateratings', target=self.updateRatingsToDatabase, args= (program,imdbid)).start()
-                    rating = None
+                    downloadedomdbinfo = downloadutils.DownloadUtils().getOmdbInfo(imdbid)
+                    if program.is_movie == "Movie":
+                        downloadedtmdbInfo = downloadutils.DownloadUtils().getTmdbInfo(imdbid)
+                    else:
+                        downloadedtmdbInfo = {}
+                    self.database.setRatingsForId(downloadedomdbinfo,downloadedtmdbInfo,imdbid)
+                    rating = self.database.getRatingsForId(imdbid)
 
                 if rating:
                     tomatometer = rating.tomatometer
