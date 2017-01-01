@@ -392,6 +392,7 @@ class TVGuide(xbmcgui.WindowXML):
         self.streamingService = streaming.StreamsService(ADDON)
 
         self.updateTimebar()
+        self.updateBackgroundImages()
 
     def createListItem(self, item):
         liz = xbmcgui.ListItem(label=item.get("label",""),label2=item.get("label2",""))
@@ -2759,6 +2760,47 @@ class TVGuide(xbmcgui.WindowXML):
 
         if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
             threading.Timer(1, self.updateQuickTimebar).start()
+
+    def updateBackgroundImages(self, scheduleTimer=True):
+        # get the now and next playing episodes
+        programList = self.database.getNowList()
+        self.updateBackgroundImagesForPrograms(programList)
+        nextProgramList = self.database.getNextList()
+        self.updateBackgroundImagesForPrograms(nextProgramList)
+
+        if scheduleTimer and not xbmc.abortRequested and not self.isClosing:
+            # run again in 60 mins
+            threading.Timer(3600, self.updateBackgroundImages).start()
+
+    def updateBackgroundImagesForPrograms(self,programList):
+        for program in programList:
+            imdbid = None
+            if program.is_movie == "Movie" or program.is_movie == "TV":
+                if program.is_movie == "Movie":
+                    media_type = 'movie'
+                else:
+                    media_type = 'tv'
+            if program.imdbid is None and program.is_movie == "Movie":
+                imdbid =  downloadutils.DownloadUtils().getExternalId(program.title,media_type)
+                self.database.setImdbId(program, imdbid)
+            elif program.imdbid and program.is_movie == "Movie":
+                imdbid = program.imdbid
+
+            if program.tvdbid is None and program.is_movie == "TV":
+                imdbid =  downloadutils.DownloadUtils().getExternalId(program.title,media_type)
+                self.database.setTvdbId(program, imdbid)
+            elif program.tvdbid and program.is_movie == "TV":
+                imdbid = program.tvdbid
+
+            if imdbid and imdbid != "None":
+                databaseartwork = downloadutils.DownloadUtils().getArtworkFavourCache(imdbid,self.database)
+                if databaseartwork is None:
+                    downloadedartwork = downloadutils.DownloadUtils().getFanartTVArt(imdbid,media_type)
+                    self.database.setArtworkForId(downloadedartwork,imdbid)
+
+            if program.imdbid is None and program.is_movie == "TV":
+                imdbid =  downloadutils.DownloadUtils().getImdbId(program.title,media_type)
+                self.database.setImdbId(program, imdbid)
 
 
 class PopupMenu(xbmcgui.WindowXMLDialog):

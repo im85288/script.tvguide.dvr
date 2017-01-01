@@ -13,6 +13,14 @@
             <posy>-10000</posy>
             <width>1</width>
             <height>1</height>
+            <texture>grid-me.png</texture>
+        </control>
+        <control type="image">
+            <description>workaround for texture not being loaded</description>
+            <posx>-10000</posx>
+            <posy>-10000</posy>
+            <width>1</width>
+            <height>1</height>
             <texture>tvg-program-focus.png</texture>
         </control>
         <control type="image">
@@ -143,15 +151,34 @@
             <height>1</height>
             <texture>splat.png</texture>
         </control>
+        <control type="image">
+            <description>workaround for texture not being loaded</description>
+            <posx>-10000</posx>
+            <posy>-10000</posy>
+            <width>1</width>
+            <height>1</height>
+            <texture>secondary1.png</texture>
+        </control>
 
 
         <control type="image">
-            <description>background</description>
+            <aspectratio>scale</aspectratio>
+            <depth>-0.80</depth>
             <posx>0</posx>
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>background3.png</texture>
+            <texture colordiffuse="FF006699">primary.jpg</texture>
+            <visible>StringCompare(Control.GetLabel(7033),)</visible>
+        </control>
+        <control type="image">
+            <depth>-0.80</depth>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1280</width>
+            <height>720</height>
+            <aspectratio>scale</aspectratio>
+            <texture colordiffuse="80A6111F">secondary1.png</texture>
             <visible>StringCompare(Control.GetLabel(7033),)</visible>
         </control>
         <control type="image" id="7033">
@@ -172,13 +199,23 @@
             <texture>background2.png</texture>
             <visible>!StringCompare(Control.GetLabel(7033),)</visible>
         </control>
+
         <control type="image">
-            <description>blackout on play</description>
+            <aspectratio>scale</aspectratio>
             <posx>0</posx>
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>background3.png</texture>
+            <texture colordiffuse="FF006699">primary.jpg</texture>
+            <visible>Control.IsVisible(5000)</visible>
+        </control>
+        <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1280</width>
+            <height>720</height>
+            <aspectratio>scale</aspectratio>
+            <texture colordiffuse="80A6111F">secondary1.png</texture>
             <visible>Control.IsVisible(5000)</visible>
         </control>
         <!-- Background -->
@@ -402,12 +439,21 @@
                 </control>
 
                 <control type="image">
-                    <description>background</description>
+                    <aspectratio>scale</aspectratio>
                     <posx>0</posx>
                     <posy>10</posy>
                     <width>1280</width>
                     <height>40</height>
-                    <texture>background2.png</texture>
+                    <texture colordiffuse="FF006699">primary.jpg</texture>
+                    <visible>true</visible>
+                </control>
+                <control type="image">
+                    <posx>0</posx>
+                    <posy>10</posy>
+                    <width>1280</width>
+                    <height>40</height>
+                    <aspectratio>scale</aspectratio>
+                    <texture colordiffuse="80A6111F">secondary1.png</texture>
                     <visible>true</visible>
                 </control>
 
@@ -544,7 +590,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture>-</texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4211">
                     <description>2nd channel</description>
@@ -556,7 +602,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4212">
                     <description>3rd channel</description>
@@ -568,7 +614,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4213">
                     <description>4th channel</description>
@@ -580,7 +626,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4214">
                     <description>5th channel</description>
@@ -592,7 +638,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4215">
                     <description>6th channel</description>
@@ -604,7 +650,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4216">
                     <description>7th channel</description>
@@ -616,7 +662,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4217">
                     <description>8th channel</description>
@@ -628,7 +674,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4218">
                     <description>9th channel</description>
@@ -640,7 +686,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4219">
                     <description>10 channel</description>
@@ -652,7 +698,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4220">
                     <description>11 channel</description>
@@ -664,7 +710,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4221">
                     <description>12 channel</description>
@@ -676,7 +722,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4222">
                     <description>13 channel</description>
@@ -688,7 +734,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4223">
                     <description>14th channel</description>
@@ -700,7 +746,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4224">
                     <description>15th channel</description>
@@ -712,7 +758,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
                 <control type="image" id="4225">
                     <description>16th channel</description>
@@ -724,7 +770,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture></texture>
+                    <texture>tvg-program-nofocus.png</texture>
                 </control>
 
                 <!-- text labels -->
@@ -1430,13 +1476,22 @@
                 <visible>!Control.IsVisible(4200)</visible>
                 <animation effect="fade" start="0" end="100" time="250" delay="1500">Visible</animation>
 
+
                 <control type="image">
-                    <description>loading background</description>
+                    <aspectratio>scale</aspectratio>
                     <posx>-340</posx>
                     <posy>-250</posy>
                     <width>1280</width>
                     <height>720</height>
-                    <texture>background3.png</texture>
+                    <texture colordiffuse="FF006699">primary.jpg</texture>
+                </control>
+                <control type="image">
+                    <posx>-340</posx>
+                    <posy>-250</posy>
+                    <width>1280</width>
+                    <height>720</height>
+                    <aspectratio>scale</aspectratio>
+                    <texture colordiffuse="80A6111F">secondary1.png</texture>
                 </control>
 
                 <control type="image">
@@ -2424,13 +2479,24 @@
             </control>
 
             <control type="image">
-                <description>background</description>
+                <aspectratio>scale</aspectratio>
                 <posx>0</posx>
                 <posy>-2</posy>
                 <width>1280</width>
                 <height>126</height>
-                <texture>background3.png</texture>
+                <texture colordiffuse="FF006699">primary.jpg</texture>
                 <visible>!Control.IsVisible(10000)</visible>
+
+            </control>
+            <control type="image">
+                <posx>0</posx>
+                <posy>-2</posy>
+                <width>1280</width>
+                <height>126</height>
+                <aspectratio>scale</aspectratio>
+                <texture colordiffuse="80A6111F">secondary1.png</texture>
+                <visible>!Control.IsVisible(10000)</visible>
+
             </control>
             <control type="image" id="14100">
                 <description>time bar</description>
@@ -2528,14 +2594,26 @@
                     <texture>tvguide-program-red.png</texture>
                     <visible>false</visible>
                 </control>
+
                 <control type="image">
-                    <description>background</description>
+                    <aspectratio>scale</aspectratio>
                     <posx>0</posx>
                     <posy>10</posy>
                     <width>1280</width>
                     <height>40</height>
-                    <texture>background3.png</texture>
+                    <texture colordiffuse="FF006699">primary.jpg</texture>
                     <visible>true</visible>
+
+                </control>
+                <control type="image">
+                    <posx>0</posx>
+                    <posy>10</posy>
+                    <width>1280</width>
+                    <height>40</height>
+                    <aspectratio>scale</aspectratio>
+                    <texture colordiffuse="80A6111F">secondary1.png</texture>
+                    <visible>true</visible>
+
                 </control>
                 <control type="image" id="14101">
                     <description>time bar</description>
@@ -2545,16 +2623,6 @@
                     <height>40</height>
                     <visible>!Control.IsVisible(10000)</visible>
                     <texture colordiffuse="FF0A0C0D">white50.png</texture>
-                </control>
-
-                <control type="image">
-                    <description>background</description>
-                    <posx>0</posx>
-                    <posy>10</posy>
-                    <width>1280</width>
-                    <height>40</height>
-                    <texture>background2.png</texture>
-                    <visible>true</visible>
                 </control>
 
                 <control type="label" id="14000">
@@ -2700,7 +2768,7 @@
                     <visible>false</visible>
                     <align>center</align>
                     <aligny>center</aligny>
-                    <texture>background.png</texture>
+                    <texture>background3.png</texture>
                 </control>
 
                 <!-- text labels -->
@@ -2872,13 +2940,24 @@
             </control>
 
             <control type="image">
-                <description>background</description>
+                <aspectratio>scale</aspectratio>
                 <posx>0</posx>
                 <posy>-135</posy>
                 <width>1280</width>
                 <height>66</height>
-                <texture>background3.png</texture>
+                <texture colordiffuse="FF006699">primary.jpg</texture>
                 <visible>Control.IsVisible(17022)</visible>
+
+            </control>
+            <control type="image">
+                <posx>0</posx>
+                <posy>-135</posy>
+                <width>1280</width>
+                <height>66</height>
+                <aspectratio>scale</aspectratio>
+                <texture colordiffuse="80A6111F">secondary1.png</texture>
+                <visible>Control.IsVisible(17022)</visible>
+
             </control>
 
             <control type="textbox" id="17022">
