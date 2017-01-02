@@ -392,7 +392,7 @@ class TVGuide(xbmcgui.WindowXML):
         self.streamingService = streaming.StreamsService(ADDON)
 
         self.updateTimebar()
-        self.updateBackgroundImages()
+        threading.Timer(1, self.updateBackgroundImages).start()
 
     def createListItem(self, item):
         liz = xbmcgui.ListItem(label=item.get("label",""),label2=item.get("label2",""))
@@ -2762,6 +2762,8 @@ class TVGuide(xbmcgui.WindowXML):
             threading.Timer(1, self.updateQuickTimebar).start()
 
     def updateBackgroundImages(self, scheduleTimer=True):
+        xbmc.log("updateBackgroundImages",level=xbmc.LOGNOTICE)
+
         # get the now and next playing episodes
         programList = self.database.getNowList()
         self.updateBackgroundImagesForPrograms(programList)

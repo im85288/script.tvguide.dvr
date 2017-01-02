@@ -10,20 +10,25 @@
     <animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>
     <animation effect="fade" start="100" end="0" time="250">WindowClose</animation>
     <controls>
+
         <control type="image">
+            <aspectratio>scale</aspectratio>
+            <depth>-0.80</depth>
             <posx>0</posx>
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>black.png</texture>
+            <texture colordiffuse="FF006699">primary.jpg</texture>
+            <visible>true</visible>
         </control>
         <control type="image">
-            <description>background</description>
+            <depth>-0.80</depth>
             <posx>0</posx>
             <posy>0</posy>
             <width>1280</width>
             <height>720</height>
-            <texture>background3.png</texture>
+            <aspectratio>scale</aspectratio>
+            <texture colordiffuse="80A6111F">secondary1.png</texture>
             <visible>true</visible>
         </control>
 
