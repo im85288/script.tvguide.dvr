@@ -50,6 +50,7 @@
         <setting id="nextup.time" type="number" label="  - Time before end in seconds to show" default="20" visible="eq(-1,true)" enable="true"/>
         <setting id="enable.nextup.showTime" label="  - Set display time" visible="eq(-2,true)" type="bool" default="false" />
         <setting id="nextup.showTime" type="number" label="    - Time in seconds to show" default="10" visible="eq(-1,true)" enable="true"/> -->
+        <setting id="enable.artwork" label="Retrieve Artwork" type="bool" default="false" />
         <setting id="enable.nextup" label="Show Up Next" type="bool" default="true" visible="false"/>
         <setting id="nextup.time" type="number" label="  - Time before end in seconds to show" default="20" visible="false" enable="true"/>
         <setting id="enable.nextup.showTime" label="  - Set display time" visible="false" type="bool" default="false" />

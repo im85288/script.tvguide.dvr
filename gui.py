@@ -304,6 +304,7 @@ class TVGuide(xbmcgui.WindowXML):
             'alternative.playback') != 'true'
         self.upNextEnabled = False
         self.upNextEnabled = ADDON.getSetting('enable.nextup') == 'true'
+        self.artworkEnabled = ADDON.getSetting('enable.artwork') == 'true'
         self.upNextTime = int(ADDON.getSetting('nextup.time'))
         self.upNextShowTimeEnabled = False
         self.upNextShowTimeEnabled = ADDON.getSetting('enable.nextup.showTime') == 'true'
@@ -1144,7 +1145,7 @@ class TVGuide(xbmcgui.WindowXML):
         self.setControlImage(self.C_MAIN_IMAGE_LARGE, '')
         self.setControlLabel(self.C_MAIN_IMDB_RATING, '')
         self.setControlLabel(self.C_MAIN_IMDB250_RATING, 'N/A')
-        if (program.is_movie == "Movie" or program.is_movie == "TV") and self.mode == MODE_EPG:
+        if (program.is_movie == "Movie" or program.is_movie == "TV") and self.mode == MODE_EPG and self.artworkEnabled:
             if program.is_movie == "Movie":
                 media_type = 'movie'
             else:
