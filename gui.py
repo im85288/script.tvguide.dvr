@@ -562,16 +562,10 @@ class TVGuide(xbmcgui.WindowXML):
             self.quickViewStartDate -= datetime.timedelta(minutes=self.quickViewStartDate.minute % 60, seconds=self.quickViewStartDate.second)
             self.currentProgram = self.database.getCurrentProgram(self.currentChannel)
             self.onRedrawQuickEPG(self.quickChannelIdx, self.quickViewStartDate)
-        elif action.getId() == ACTION_DOWN and xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
-            self.mode = MODE_IPLAYER
-            control = self.getControl(self.C_IPLAYER_POPULAR)
-            self._showControl(self.C_IPLAYER)
-            super(TVGuide, self).setFocus(control)
-        elif action.getId() == ACTION_DOWN and not xbmc.getCondVisibility("System.HasAddon(plugin.video.iplayerwww)"):
-            self.quickViewStartDate = datetime.datetime.today()
-            self.quickViewStartDate -= datetime.timedelta(minutes=self.quickViewStartDate.minute % 60, seconds=self.quickViewStartDate.second)
-            self.currentProgram = self.database.getCurrentProgram(self.currentChannel)
-            self.onRedrawQuickEPG(self.quickChannelIdx, self.quickViewStartDate)
+        elif action.getId() == ACTION_DOWN:
+            self.osdChannel = self.currentChannel
+            self.osdProgram = self.database.getCurrentProgram(self.osdChannel)
+            self._showOsd()
         elif action.getId() == ACTION_SELECT_ITEM:
             self._hideQuickEpg()
         elif action.getId() in [REMOTE_1]:

@@ -26,9 +26,12 @@
 #
 import gui
 import downloadutils
+import xbmcaddon
 
 try:
-    downloadutils.DownloadUtils()._getImdbTop250()
+    ADDON = xbmcaddon.Addon('script.tvguide.dvr')
+    if ADDON.getSetting('enable.artwork') == 'true':
+        downloadutils.DownloadUtils()._getImdbTop250()
     w = gui.TVGuide()
     w.doModal()
     del w
