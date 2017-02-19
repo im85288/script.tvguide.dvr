@@ -3289,7 +3289,7 @@ class StreamSetupDialog(xbmcgui.WindowXMLDialog):
 
         elif controlId == self.C_STREAM_STRM_BROWSE:
             dialog = xbmcgui.Dialog()
-            stream = dialog.browse(1, ADDON.getLocalizedString(30304), 'video', '.strm|.m3u|.m3u8')
+            stream = dialog.browse(1, ADDON.getLocalizedString(30304), 'files', '.strm|.m3u|.m3u8')
             if stream:
                 stream_name = stream
                 f = xbmcvfs.File(stream,"rb")
